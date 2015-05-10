@@ -26,6 +26,11 @@ namespace Geometry
 		    return new Point(A.x - B.x, A.y - B.y);
 	    }
 
+	    public static Point operator -(Point A)
+	    {
+		    return new Point(-A.x, -A.y);
+	    }
+
 	    public static Point operator *(Point A, double k)
 	    {
 		    return new Point(A.x * k, A.y * k);

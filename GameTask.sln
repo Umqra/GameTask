@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTask", "GameTask\GameTa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry", "Geometry\Geometry.csproj", "{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGeometry", "TestGeometry\TestGeometry.csproj", "{634B535C-B1B7-424B-A46B-F95665006FB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{634B535C-B1B7-424B-A46B-F95665006FB4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{634B535C-B1B7-424B-A46B-F95665006FB4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{634B535C-B1B7-424B-A46B-F95665006FB4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{634B535C-B1B7-424B-A46B-F95665006FB4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
