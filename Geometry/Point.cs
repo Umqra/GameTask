@@ -8,7 +8,7 @@ namespace Geometry
 {
     public class Point
     {
-	    private double x, y;
+	    public readonly double x, y;
 
 	    public Point(double x, double y)
 	    {
@@ -36,6 +36,11 @@ namespace Geometry
 		    return new Point(A.x * k, A.y * k);
 	    }
 
+	    public static Point operator /(Point A, double k)
+	    {
+		    return new Point(A.x / k, A.y / k);
+	    }
+
 	    public static double DotProduct(Point A, Point B)
 	    {
 		    return A.x * B.x + A.y * B.y;
@@ -56,5 +61,80 @@ namespace Geometry
 		    return CrossProduct(this, B);
 	    }
 
+	    public Point RotateAroundOrigin(double angle)
+	    {
+		    double sina = Math.Sin(angle);
+		    double cosa = Math.Cos(angle);
+			return new Point(x * cosa - y * sina, x * sina + y * cosa);
+	    }
+
+	    public Point RotateAroundPoint(Point center, double angle)
+	    {
+		    Point v = this - center;
+		    return center + v.RotateAroundOrigin(angle);
+	    }
+
+	    public double Length
+	    {
+		    get { return Math.Sqrt(x * x + y * y); }
+	    }
+
+	    public Point SetLength(double length)
+	    {
+		    if (Length.IsEqual(0))
+		    {
+			    if (length.IsNotEqual(0))
+					throw new ArgumentException("Try set zero length to non-zero vector");
+			    return new Point(0, 0);
+		    }
+		    return this / Length * length;
+	    }
+
+	    public double GetAngle()
+	    {
+		    return Math.Atan2(y, x);
+	    }
+
+	    public double DistanceTo(Point P)
+	    {
+		    return (this - P).Length;
+	    }
+
+	    public Point ProjectToLine(Line line)
+	    {
+		    return GeometryOperations.ProjectPointOnLine(this, line);
+	    }
+
+	    public int Quarter
+	    {
+		    get
+		    {
+			    if (x.IsGreater(0) && y.IsGreaterOrEqual(0))
+				    return 1;
+			    if (x.IsLessOrEqual(0) && y.IsGreater(0))
+				    return 2;
+			    if (x.IsLess(0) && y.IsLessOrEqual(0))
+				    return 3;
+			    return 4;
+		    }
+	    }
+
+		public override string ToString()
+		{
+			return String.Format("Point({0} {1})", x, y);
+		}
+
+		protected bool Equals(Point other)
+		{
+			return x.IsEqual(other.x) && y.IsEqual(other.y);
+		}
+
+	    public override bool Equals(object obj)
+	    {
+		    if (ReferenceEquals(null, obj)) return false;
+		    if (ReferenceEquals(this, obj)) return true;
+		    if (obj.GetType() != this.GetType()) return false;
+		    return Equals((Point) obj);
+	    }
     }
 }

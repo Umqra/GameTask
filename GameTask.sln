@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTask", "GameTask\GameTask.csproj", "{14E759AD-6E56-49E5-9163-C62AAC506984}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Geometry", "Geometry\Geometry.csproj", "{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{14E759AD-6E56-49E5-9163-C62AAC506984}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14E759AD-6E56-49E5-9163-C62AAC506984}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14E759AD-6E56-49E5-9163-C62AAC506984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03D4988F-1F5F-4A53-ADDB-2DE0A7040A9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
