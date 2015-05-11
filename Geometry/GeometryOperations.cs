@@ -31,7 +31,27 @@ namespace Geometry
 
 		public static double DistanceFromPointToLine(Point P, Line line)
 		{
-			return ProjectPointOnLine(P, line).DistanceTo(P);
+			return ProjectPointOnLine(P, line).DistanceToPoint(P);
+		}
+
+		public static double DistanceFromPointToSegment(Point P, Segment segment)
+		{
+			Point H = P.ProjectToLine(segment.BaseLine);
+			if (segment.ContainsPoint(H))
+				return H.DistanceToPoint(P);
+			return Math.Min(segment.A.DistanceToPoint(P), segment.B.DistanceToPoint(P));
+		}
+
+		public static double DistanceFromPointToPolygon(Point P, ConvexPolygon polygon)
+		{
+			double distance = double.MaxValue;
+			for (int i = 0; i < polygon.Count; i++)
+			{
+				Point A = polygon[i];
+				Point B = polygon[(i + 1) % polygon.Count];
+				distance = Math.Min(distance, P.DistanceToSegment(new Segment(A, B)));
+			}
+			return distance;
 		}
 
 		public static Point IntersectLines(Line a, Line b)
@@ -113,7 +133,7 @@ namespace Geometry
 				if (v.Quarter != u.Quarter)
 					return v.Quarter < u.Quarter ? -1 : 1;
 				if (v.CrossProductWith(u).IsNotEqual(0))
-					return v.CrossProductWith(u).IsLess(0) ? -1 : 1;
+					return v.CrossProductWith(u).IsGreater(0) ? -1 : 1;
 				return v.Length < u.Length ? -1 : 1;
 			}
 		}

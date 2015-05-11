@@ -31,6 +31,11 @@ namespace Geometry
 			return GeometryOperations.IsPointOnSegment(P, this);
 		}
 
+		public double DistanceToPoint(Point P)
+		{
+			return GeometryOperations.DistanceFromPointToSegment(P, this);
+		}
+
 		public Point IntersectWithLine(Line line)
 		{
 			return GeometryOperations.IntersectSegmentLine(this, line);

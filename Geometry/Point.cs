@@ -100,9 +100,24 @@ namespace Geometry
 		    return Math.Atan2(y, x);
 	    }
 
-	    public double DistanceTo(Point P)
+	    public double DistanceToPoint(Point P)
 	    {
 		    return (this - P).Length;
+	    }
+
+	    public double DistanceToLine(Line line)
+	    {
+		    return GeometryOperations.DistanceFromPointToLine(this, line);
+	    }
+
+	    public double DistanceToSegment(Segment segment)
+	    {
+		    return GeometryOperations.DistanceFromPointToSegment(this, segment);
+	    }
+
+	    public double DistanceToPolygon(ConvexPolygon polygon)
+	    {
+		    return GeometryOperations.DistanceFromPointToPolygon(this, polygon);
 	    }
 
 	    public Point ProjectToLine(Line line)

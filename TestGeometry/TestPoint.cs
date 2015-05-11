@@ -186,7 +186,7 @@ namespace TestGeometry
 		{
 			var A = new Point(10, -3);
 			var B = new Point(7, 1);
-			Assert.IsTrue(5.0.IsEqual(A.DistanceTo(B)));
+			Assert.IsTrue(5.0.IsEqual(A.DistanceToPoint(B)));
 		}
 
 		[Test]
