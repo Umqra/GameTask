@@ -42,8 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestLine.cs" />
     <Compile Include="TestPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestSegment.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

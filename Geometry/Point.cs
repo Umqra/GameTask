@@ -124,6 +124,11 @@ namespace Geometry
 		    }
 	    }
 
+	    public bool IsCollinear(Point v)
+	    {
+		    return CrossProductWith(v).IsEqual(0);
+	    }
+	
 		public override string ToString()
 		{
 			return String.Format("Point({0} {1})", x, y);

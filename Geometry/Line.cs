@@ -23,7 +23,7 @@ namespace Geometry
 
 		public bool IsCollinear(Line line)
 		{
-			return Direction.CrossProductWith(line.Direction).IsEqual(0);
+			return Direction.IsCollinear(line.Direction);
 		}
 
 		public bool ContainsPoint(Point P)

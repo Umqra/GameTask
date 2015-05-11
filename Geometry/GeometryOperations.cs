@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Geometry
 {
-	class GeometryOperations
+	public class GeometryOperations
 	{
 		// ReSharper disable InconsistentNaming
 		public static bool IsPointOnLine(Point P, Line line)
@@ -41,13 +41,13 @@ namespace Geometry
 			var v = a.Direction;
 			var u = b.Direction;
 			var k = (a.A.CrossProductWith(v) - b.A.CrossProductWith(v)) / u.CrossProductWith(v);
-			return b.B + u * k;
+			return b.A + u * k;
 		}
 
 		public static Point IntersectSegmentLine(Segment a, Line b)
 		{
 			var intersection = IntersectLines(a.BaseLine, b);
-			if (intersection == null || a.ContainsPoint(intersection))
+			if (intersection == null || !a.ContainsPoint(intersection))
 				return null;
 			return intersection;
 		}

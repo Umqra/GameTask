@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Geometry
 {
-	class Circle
+	public class Circle
 	{
 		public readonly Point center;
 		public readonly double radius;

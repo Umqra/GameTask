@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit;
+using Geometry;
 using NUnit.Framework;
 
-namespace Geometry
+namespace TestGeometry
 {
 	// ReSharper disable InconsistentNaming
 	[TestFixture]
@@ -194,7 +190,7 @@ namespace Geometry
 		}
 
 		[Test]
-		public void TestQuerter()
+		public void TestQuarter()
 		{
 			var testPoint = new[]
 			{
@@ -213,6 +209,20 @@ namespace Geometry
 			};
 			for (int i = 0; i < 8; i++)
 				Assert.AreEqual(expectedResult[i], testPoint[i].Quarter);
+		}
+
+		[Test]
+		public void TestCollinear()
+		{
+			var A = new Point(4, -3);
+			var B = new Point(-4.0 / 3, 1);
+			var C = new Point(12, 927);
+			var Z = new Point(0, 0);
+			Assert.IsTrue(A.IsCollinear(B));
+			Assert.IsFalse(A.IsCollinear(C));
+			Assert.IsTrue(A.IsCollinear(Z));
+			Assert.IsTrue(B.IsCollinear(Z));
+			Assert.IsTrue(C.IsCollinear(Z));
 		}
 	}
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Geometry
 {
-	class ConvexPolygon : IEnumerable<Point>
+	public class ConvexPolygon : IEnumerable<Point>
 	{
 		private List<Point> points;
 
