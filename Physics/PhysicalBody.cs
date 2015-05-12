@@ -11,32 +11,53 @@ namespace Physics
 {
     public class PhysicalBody
     {
-	    internal double mass;
-	    internal Point centerOfMass;
-	    internal Point acceleration;
-	    internal Point velocity;
-	    internal bool isStatic;
+	    public double Mass { get; set; }
+	    public Point Acceleration { get; set; }
+		public Point Velocity { get; set; }
+		public double FrictionCoefficient { get; set; }
+		public bool IsStatic { get; set; }
 
-	    public ConvexPolygon shape;
-
-	    public PhysicalBody(ConvexPolygon shape, bool isStatic, double mass)
-	    {
-		    this.shape = shape;
-		    this.isStatic = isStatic;
-		    this.mass = mass;
-		    this.centerOfMass = shape.GetCenterOfMass();
-		    this.velocity = new Point(10, 0);
-		    this.acceleration = new Point(0, 9.8);
-	    }
-
-	    public void Move(double deltaTime)
-	    {
-		    if (isStatic) return;
-		    velocity += acceleration * deltaTime;
-		    centerOfMass += velocity * deltaTime;
-		    shape = shape.Move(velocity * deltaTime);
-	    }
-
+		public ConvexPolygon Shape { get; set; }
+		public Point CenterOfMass { get; set; }
 	    
+	    protected PhysicalBody(double mass, Point velocity, double friction, bool isStatic,
+			ConvexPolygon shape, Point centerOfMass)
+	    {
+		    this.Mass = mass;
+		    this.Acceleration = new Point(0, 0);
+		    this.Velocity = velocity;
+		    this.FrictionCoefficient = friction;
+		    this.IsStatic = isStatic;
+		    this.Shape = shape;
+		    this.CenterOfMass = centerOfMass;
+	    }
+		
+		protected PhysicalBody(double mass, Point velocity, double friction, bool isStatic,
+			ConvexPolygon shape) : this(mass, velocity, friction, isStatic, shape, shape.GetCenterOfMass())
+		{
+		}
+
+	    protected PhysicalBody()
+	    {
+		    
+	    }
+
+	    public double KinetickEnergy
+	    {
+		    get { return Mass * Velocity.Length * Velocity.Length / 2; }
+	    }
+
+	    public virtual void ApplyForce(Point point, Point force, double dt)
+	    {
+		    Velocity += force * dt;
+	    }
+
+	    public virtual void OnTick(double dt)
+	    {
+		    if (IsStatic) return;
+		    Velocity += Acceleration * dt;
+		    CenterOfMass += Velocity * dt;
+		    Shape = Shape.Move(Velocity * dt);
+	    }
     }
 }

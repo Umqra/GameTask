@@ -129,6 +129,8 @@ namespace Geometry
 	    {
 		    get
 		    {
+			    if (x.IsEqual(0) && y.IsEqual(0))
+				    return 1;
 			    if (x.IsGreater(0) && y.IsGreaterOrEqual(0))
 				    return 1;
 			    if (x.IsLessOrEqual(0) && y.IsGreater(0))

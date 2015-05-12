@@ -212,6 +212,12 @@ namespace TestGeometry
 		}
 
 		[Test]
+		public void TestQuarterZeroVector()
+		{
+			Assert.AreEqual(1, new Point(0, 0).Quarter);
+		}
+
+		[Test]
 		public void TestCollinear()
 		{
 			var A = new Point(4, -3);

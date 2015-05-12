@@ -41,7 +41,12 @@ namespace Geometry
 			return GeometryOperations.DistanceFromPointToPolygon(P, this);
 		}
 
-		double GetArea()
+		public Segment NeareseEdgeFromPoint(Point P)
+		{
+			return GeometryOperations.NearestEdgeFromPointToPolygon(P, this);
+		}
+
+		public double GetArea()
 		{
 			double area = 0;
 			for (int i = 1; i < Count - 1; i++)

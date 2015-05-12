@@ -42,16 +42,28 @@ namespace Geometry
 			return Math.Min(segment.A.DistanceToPoint(P), segment.B.DistanceToPoint(P));
 		}
 
-		public static double DistanceFromPointToPolygon(Point P, ConvexPolygon polygon)
+		public static Segment NearestEdgeFromPointToPolygon(Point P, ConvexPolygon polygon)
 		{
-			double distance = double.MaxValue;
+			double distance = double.PositiveInfinity;
+			Segment nearest = null;
 			for (int i = 0; i < polygon.Count; i++)
 			{
 				Point A = polygon[i];
 				Point B = polygon[(i + 1) % polygon.Count];
+				double curDistance = P.DistanceToSegment(new Segment(A, B));
+				if (curDistance < distance)
+				{
+					distance = curDistance;
+					nearest = new Segment(A, B);
+				}
 				distance = Math.Min(distance, P.DistanceToSegment(new Segment(A, B)));
 			}
-			return distance;
+			return nearest;
+		}
+
+		public static double DistanceFromPointToPolygon(Point P, ConvexPolygon polygon)
+		{
+			return NearestEdgeFromPointToPolygon(P, polygon).DistanceToPoint(P);
 		}
 
 		public static Point IntersectLines(Line a, Line b)
@@ -95,7 +107,9 @@ namespace Geometry
 					return null;
 				return IntersectSegmentsOnLine(a, b);
 			}
-			return new Segment(intersection, intersection);
+			if (a.ContainsPoint(intersection) && b.ContainsPoint(intersection))
+				return new Segment(intersection, intersection);
+			return null;
 		}
 
 		public static Segment IntersectCircleLine(Circle circle, Line line)
@@ -140,6 +154,8 @@ namespace Geometry
 
 		public static List<Point> BuildConvexHull(List<Point> points)
 		{
+			if (points.Count <= 1)
+				return points;
 			var sortedPoint = points.ToList();
 			sortedPoint.Sort((a, b) =>
 			{
@@ -172,7 +188,7 @@ namespace Geometry
 			{
 				Point A = polygon[i];
 				Point B = polygon[(i + 1) % polygon.Count];
-				if ((B - A).CrossProductWith(P).IsLess(0))
+				if ((B - A).CrossProductWith(P - A).IsLess(0))
 					return false;
 			}
 			return true;
