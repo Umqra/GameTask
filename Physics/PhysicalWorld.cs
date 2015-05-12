@@ -15,7 +15,7 @@ namespace Physics
 
 		public PhysicalWorld()
 		{
-			acceleration = new Point(0, -9.8);
+			acceleration = new Point(0, 9.8);
 			bodies = new List<PhysicalBody>();
 		}
 
@@ -30,33 +30,6 @@ namespace Physics
 			return a.Shape.IntersectWithPolygon(b.Shape).Count > 2;
 		}
 
-		public static Point GetContactPoint(PhysicalBody a, PhysicalBody b)
-		{
-			Point deepPointA = null;
-			double distanceA = 0;
-			foreach (var point in a.Shape)
-			{
-				double curDistance = b.Shape.DistanceToPoint(point);
-				if (b.Shape.ContainsPoint(point) && curDistance > distanceA)
-				{
-					deepPointA = point;
-					distanceA = curDistance;
-				}
-			}
-			Point deepPointB = null;
-			double distanceB = 0;
-			foreach (var point in b.Shape)
-			{
-				double curDistance = a.Shape.DistanceToPoint(point);
-				if (a.Shape.ContainsPoint(point) && curDistance > distanceB)
-				{
-					deepPointB = point;
-					distanceB = curDistance;
-				}
-			}
-			return distanceA > distanceB ? deepPointA : deepPointB;
-		}
-
 		public bool CanMove(PhysicalBody a, Point direction)
 		{
 			if (direction.Length.IsEqual(0))
@@ -66,7 +39,9 @@ namespace Physics
 			foreach (var body in bodies)
 			{
 				if (body == a) continue;
-				if (shape.IntersectWithPolygon(body.Shape).GetArea().IsGreater(1))
+				double currentIntersection = shape.IntersectWithPolygon(body.Shape).GetArea();
+				double oldIntersection = a.Shape.IntersectWithPolygon(body.Shape).GetArea();
+				if (currentIntersection.IsGreater(1) && (oldIntersection / currentIntersection).IsLess(1))
 				{
 					if (body.IsStatic || !CanMove(body, direction))
 						return false;
@@ -75,33 +50,31 @@ namespace Physics
 			return true;
 		}
 
+		public Point GetVectorForResolveCollision(PhysicalBody a, PhysicalBody b)
+		{
+			var intersection = a.Shape.IntersectWithPolygon(b.Shape);
+			if (intersection.Count < 3)
+				return new Point(0, 0);
+			var A = intersection[0];
+			var B = intersection[1];
+			var C = intersection[intersection.Count - 1];
+			if (!b.Shape.IsPointOnBorder(A))
+				return A.DistanceToPoint(B) < A.DistanceToPoint(C) ? B - A : C - A;
+			return A.DistanceToPoint(B) < A.DistanceToPoint(C) ? A - B : A - C;
+		}
+
 		public virtual void ResolveCollision(PhysicalBody a, PhysicalBody b, double dt)
 		{
-			var contact = GetContactPoint(a, b);
-			var nearEdgeA = a.Shape.NeareseEdgeFromPoint(contact);
-			var nearEdgeB = b.Shape.NeareseEdgeFromPoint(contact);
-
-			Point normal = null;
-			if (nearEdgeA.ContainsPoint(contact))
-			{
-				normal = contact.ProjectToLine(nearEdgeB.BaseLine);
-				if (!a.IsStatic && CanMove(a, normal - contact))
-					a.Shape = a.Shape.Move(normal - contact);
-				else
-					b.Shape = b.Shape.Move(contact - normal);
-			}
-			else
-			{
-				normal = contact.ProjectToLine(nearEdgeA.BaseLine);
-				if (!b.IsStatic && CanMove(b, normal - contact))
-					b.Shape = b.Shape.Move(normal - contact);
-				else
-					a.Shape = a.Shape.Move(contact - normal);
-			}
-			if (Equals(normal, contact))
+			Point delta = GetVectorForResolveCollision(a, b);
+			if (Equals(delta, new Point(0, 0)))
 				return;
-			Point e1 = (normal - contact).SetLength(1);
-			Point e2 = e1.RotateAroundOrigin(Math.PI / 2);
+			if (!a.IsStatic && CanMove(a, delta))
+				a.Shape = a.Shape.Move(delta);
+			else if (!b.IsStatic && CanMove(b, -delta))
+				b.Shape = b.Shape.Move(-delta);
+
+			var e1 = delta.SetLength(1);
+			var e2 = e1.RotateAroundOrigin(Math.PI / 2);
 
 			var centerOfMassVelocity = (a.Velocity * a.Mass + b.Velocity * b.Mass) / (a.Mass + b.Mass);
 

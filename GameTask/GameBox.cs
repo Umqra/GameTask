@@ -14,7 +14,7 @@ namespace GameTask
 	class GameBox : GameObject
 	{
 		public GameBox(Point center, double size, double mass, double friction)
-			: base(mass, new Point(0, 0), friction, false, null, null)
+			: base(mass, new Point(0, 0), friction, false, null)
 		{
 			Point v = new Point(size / 2, size / 2);
 			var points = new[]
@@ -23,7 +23,6 @@ namespace GameTask
 				center - v, center - v.RotateAroundOrigin(Math.PI / 2)
 			};
 			Shape = new ConvexPolygon(points);
-			CenterOfMass = Shape.GetCenterOfMass();
 		}
 
 		public override void OnPaint(object sender, PaintEventArgs e)

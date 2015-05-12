@@ -144,8 +144,6 @@ namespace Geometry
 					return 0;
 				Point v = x - origin;
 				Point u = y - origin;
-				if (v.Quarter != u.Quarter)
-					return v.Quarter < u.Quarter ? -1 : 1;
 				if (v.CrossProductWith(u).IsNotEqual(0))
 					return v.CrossProductWith(u).IsGreater(0) ? -1 : 1;
 				return v.Length < u.Length ? -1 : 1;
@@ -192,6 +190,11 @@ namespace Geometry
 					return false;
 			}
 			return true;
+		}
+
+		public static bool IsPointOnPolygonBorder(Point P, ConvexPolygon polygon)
+		{
+			return polygon.Where((t, i) => new Segment(t, polygon[(i + 1) % polygon.Count]).ContainsPoint(P)).Any();
 		}
 
 		public static ConvexPolygon IntersectPolygons(ConvexPolygon a, ConvexPolygon b)

@@ -12,7 +12,7 @@ namespace GameTask
 	abstract class GameObject : PhysicalBody, IDrawable
 	{
 		protected GameObject(double mass, Point velocity, double friction, bool isStatic,
-			ConvexPolygon shape, Point centerOfMass) : base(mass, velocity, friction, isStatic, shape, centerOfMass)
+			ConvexPolygon shape) : base(mass, velocity, friction, isStatic, shape)
 		{
 			
 		}

@@ -12,16 +12,27 @@ namespace Physics
     public class PhysicalBody
     {
 	    public double Mass { get; set; }
-	    public Point Acceleration { get; set; }
-		public Point Velocity { get; set; }
-		public double FrictionCoefficient { get; set; }
+	    public virtual Point Acceleration { get; set; }
+
+	    private Point velocity;
+	    public Point Velocity
+	    {
+		    get { return velocity; }
+		    set { if (!IsStatic) velocity = value; }
+	    }
+
+	    public double FrictionCoefficient { get; set; }
 		public bool IsStatic { get; set; }
 
 		public ConvexPolygon Shape { get; set; }
-		public Point CenterOfMass { get; set; }
+
+	    public Point CenterOfMass
+	    {
+		    get { return Shape.GetCenterOfMass(); }
+	    }
 	    
 	    protected PhysicalBody(double mass, Point velocity, double friction, bool isStatic,
-			ConvexPolygon shape, Point centerOfMass)
+			ConvexPolygon shape)
 	    {
 		    this.Mass = mass;
 		    this.Acceleration = new Point(0, 0);
@@ -29,13 +40,7 @@ namespace Physics
 		    this.FrictionCoefficient = friction;
 		    this.IsStatic = isStatic;
 		    this.Shape = shape;
-		    this.CenterOfMass = centerOfMass;
 	    }
-		
-		protected PhysicalBody(double mass, Point velocity, double friction, bool isStatic,
-			ConvexPolygon shape) : this(mass, velocity, friction, isStatic, shape, shape.GetCenterOfMass())
-		{
-		}
 
 	    protected PhysicalBody()
 	    {
@@ -56,7 +61,6 @@ namespace Physics
 	    {
 		    if (IsStatic) return;
 		    Velocity += Acceleration * dt;
-		    CenterOfMass += Velocity * dt;
 		    Shape = Shape.Move(Velocity * dt);
 	    }
     }

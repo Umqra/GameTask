@@ -57,7 +57,9 @@
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GameLevitateObject.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="GamePlayer.cs" />
     <Compile Include="GameWall.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="IDrawable.cs" />

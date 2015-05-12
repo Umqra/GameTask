@@ -36,6 +36,11 @@ namespace Geometry
 			return GeometryOperations.IsPointInPolygon(P, this);
 		}
 
+		public bool IsPointOnBorder(Point P)
+		{
+			return GeometryOperations.IsPointOnPolygonBorder(P, this);
+		}
+
 		public double DistanceToPoint(Point P)
 		{
 			return GeometryOperations.DistanceFromPointToPolygon(P, this);
