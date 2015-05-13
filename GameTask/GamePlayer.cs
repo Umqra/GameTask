@@ -12,11 +12,11 @@ namespace GameTask
 {
 	class GamePlayer : GameObject
 	{
-		private const double PlayerWidth = 10;
-		private const double PlayerHeight = 20;
+		private const double PlayerWidth = 50;
+		private const double PlayerHeight = 50;
 		public GamePlayer(Point center) : base(Physics.Material.Wood, new Point(0, 0), 1, false, null)
 		{
-			Point v = new Point(PlayerWidth, PlayerHeight);
+			Point v = new Point(PlayerWidth / 2, PlayerHeight / 2);
 			Shape = new ConvexPolygon(
 				new[]
 				{
@@ -27,9 +27,8 @@ namespace GameTask
 		public override void OnPaint(object sender, PaintEventArgs e)
 		{
 			var graphics = e.Graphics;
-			graphics.FillPolygon(Brushes.MediumAquamarine,
-				Shape.Select(p => new PointF((float)p.x, (float)p.y)).ToArray()
-				);
+			graphics.DrawImage(Image.FromFile("../../../player.png"),
+				(float)Shape[0].x, (float)Shape[0].y, (float)PlayerWidth, (float)PlayerHeight);
 		}
 	}
 }

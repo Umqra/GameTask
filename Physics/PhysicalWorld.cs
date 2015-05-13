@@ -61,7 +61,7 @@ namespace Physics
 		{
 			var delta = GetVectorForResolveCollision(a, b);
 			var relativeVelocity = a.Velocity - b.Velocity;
-			
+			CorrectPositions(a, b, delta);
 			if (delta.Length.IsEqual(0) || relativeVelocity.DotProductWith(delta).IsGreater(0))
 				return;
 			var normal = delta.SetLength(1);
@@ -70,7 +70,6 @@ namespace Physics
 			double impulse = relativeVelocity.DotProductWith(normal) * (1 + e) / (1 / a.Mass + 1 / b.Mass);
 			a.Velocity -= impulse * normal / a.Mass;
 			b.Velocity += impulse * normal / b.Mass;
-			CorrectPositions(a, b, delta);
 
 			ApplyFrictionForces(a, b, impulse * normal);
 		}
