@@ -14,7 +14,7 @@ namespace GameTask
 	class GameWall : GameObject
 	{
 		public GameWall(Point[] points, double friction)
-			: base(1, new Point(0, 0), friction, true, null)
+			: base(Physics.Material.Rock, new Point(0, 0), friction, true, null)
 		{
 			Shape = new ConvexPolygon(points);
 		}

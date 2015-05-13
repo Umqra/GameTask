@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Geometry;
 
@@ -30,26 +31,6 @@ namespace Physics
 			return a.Shape.IntersectWithPolygon(b.Shape).Count > 2;
 		}
 
-		public bool CanMove(PhysicalBody a, Point direction)
-		{
-			if (direction.Length.IsEqual(0))
-				return true;
-			direction *= 1.1;
-			var shape = a.Shape.Move(direction);
-			foreach (var body in bodies)
-			{
-				if (body == a) continue;
-				double currentIntersection = shape.IntersectWithPolygon(body.Shape).GetArea();
-				double oldIntersection = a.Shape.IntersectWithPolygon(body.Shape).GetArea();
-				if (currentIntersection.IsGreater(1) && (oldIntersection / currentIntersection).IsLess(1))
-				{
-					if (body.IsStatic || !CanMove(body, direction))
-						return false;
-				}
-			}
-			return true;
-		}
-
 		public Point GetVectorForResolveCollision(PhysicalBody a, PhysicalBody b)
 		{
 			var intersection = a.Shape.IntersectWithPolygon(b.Shape);
@@ -58,28 +39,73 @@ namespace Physics
 			var A = intersection[0];
 			var B = intersection[1];
 			var C = intersection[intersection.Count - 1];
-			if (!b.Shape.IsPointOnBorder(A))
-				return A.DistanceToPoint(B) < A.DistanceToPoint(C) ? B - A : C - A;
-			return A.DistanceToPoint(B) < A.DistanceToPoint(C) ? A - B : A - C;
+			var bestDirection = (A.DistanceToPoint(B) < A.DistanceToPoint(C) ? B : C) - A;
+			if (a.Shape.GetBoundingBox()[0].DotProductWith(bestDirection).IsGreater(
+				b.Shape.GetBoundingBox()[0].DotProductWith(bestDirection)))
+				return bestDirection;
+			return -bestDirection;
+		}
+
+		public virtual void CorrectPositions(PhysicalBody a, PhysicalBody b, Point direction)
+		{
+			const double percentage = 1;
+			const double slop = 0.1;
+			double penetration = direction.Length;
+			Point correction = Math.Max(penetration - slop, 0.0) * percentage / 
+				(1 / a.Mass + 1 / b.Mass) * direction.SetLength(1);
+			a.Shape = a.Shape.Move(correction * (1 / a.Mass));
+			b.Shape = b.Shape.Move(-correction * (1 / b.Mass));
 		}
 
 		public virtual void ResolveCollision(PhysicalBody a, PhysicalBody b, double dt)
 		{
-			Point delta = GetVectorForResolveCollision(a, b);
-			if (Equals(delta, new Point(0, 0)))
+			var delta = GetVectorForResolveCollision(a, b);
+			var relativeVelocity = a.Velocity - b.Velocity;
+			
+			if (delta.Length.IsEqual(0) || relativeVelocity.DotProductWith(delta).IsGreater(0))
 				return;
-			if (!a.IsStatic && CanMove(a, delta))
-				a.Shape = a.Shape.Move(delta);
-			else if (!b.IsStatic && CanMove(b, -delta))
-				b.Shape = b.Shape.Move(-delta);
+			var normal = delta.SetLength(1);
 
-			var e1 = delta.SetLength(1);
-			var e2 = e1.RotateAroundOrigin(Math.PI / 2);
+			double e = Math.Min(a.Material.elasticity, b.Material.elasticity);
+			double impulse = relativeVelocity.DotProductWith(normal) * (1 + e) / (1 / a.Mass + 1 / b.Mass);
+			a.Velocity -= impulse * normal / a.Mass;
+			b.Velocity += impulse * normal / b.Mass;
+			CorrectPositions(a, b, delta);
 
-			var centerOfMassVelocity = (a.Velocity * a.Mass + b.Velocity * b.Mass) / (a.Mass + b.Mass);
+			ApplyFrictionForces(a, b, impulse * normal);
+		}
 
-			a.Velocity = centerOfMassVelocity.DotProductWith(e1) * e1 + a.Velocity.DotProductWith(e2) * e2 / (a.FrictionCoefficient * b.FrictionCoefficient * dt + 1);
-			b.Velocity = centerOfMassVelocity.DotProductWith(e1) * e1 + b.Velocity.DotProductWith(e2) * e2 / (a.FrictionCoefficient * b.FrictionCoefficient * dt + 1);
+		public bool IsBodyOnGround(PhysicalBody a, Point groundDirection)
+		{
+			groundDirection = groundDirection.SetLength(1);
+			var shape = a.Shape.Move(groundDirection);
+			foreach (var body in bodies)
+			{
+				if (body == a || !IsBodiesCollided(a, body)) continue;
+				var delta = GetVectorForResolveCollision(a, body);
+				if (delta.DotProductWith(groundDirection).IsLess(0))
+					return true;
+			}
+			return false;
+		}
+
+		public virtual void ApplyFrictionForces(PhysicalBody a, PhysicalBody b, Point normalImpulse)
+		{
+			var relativeVelocity = a.Velocity - b.Velocity;
+			var ort = normalImpulse.RotateAroundOrigin(Math.PI / 2);
+			var tanget = (relativeVelocity.DotProductWith(ort) * ort);
+			if (tanget.Length.IsEqual(0))
+				return;
+			tanget = tanget.SetLength(1);
+			double impulse = -relativeVelocity.DotProductWith(tanget) / (1 / a.Mass + 1 / b.Mass);
+			double mu = Math.Sqrt(a.Material.frictionCoefficient.Sqr() + b.Material.frictionCoefficient.Sqr());
+			Point frictionImpulse;
+			if (Math.Abs(impulse).IsLessOrEqual(normalImpulse.Length * mu))
+				frictionImpulse = impulse * tanget;
+			else
+				frictionImpulse = -(normalImpulse.Length * mu) * tanget;
+			a.Velocity += frictionImpulse / a.Mass;
+			b.Velocity -= frictionImpulse / b.Mass;
 		}
 
 		public void OnTick(double dt)

@@ -26,6 +26,19 @@ namespace Geometry
 			this.points = GeometryOperations.BuildConvexHull(points.ToList());
 		}
 
+		public List<Point> GetBoundingBox()
+		{
+			double minX = points.Min(p => p.x);
+			double minY = points.Min(p => p.y);
+			double maxX = points.Max(p => p.x);
+			double maxY = points.Max(p => p.y);
+			return new List<Point>
+			{
+				new Point(minX, minY),
+				new Point(maxX, maxY)
+			};
+		}
+
 		public Point this[int index]
 		{
 			get { return points[index]; }

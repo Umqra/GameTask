@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Geometry
 {
-	public static class ComprasionDouble
+	public static class DoubleExtensions
 	{
 		public const double Epsilon = 1e-6;
 
@@ -16,10 +16,7 @@ namespace Geometry
 		{
 			if (a.IsLess(0))
 				return -1;
-			else if (a.IsEqual(0))
-				return 0;
-			else
-				return 1;
+			return a.IsEqual(0) ? 0 : 1;
 		}
 
 		public static bool AreEqual(double a, double b, double eps)
@@ -96,6 +93,11 @@ namespace Geometry
 		public static bool IsGreaterOrEqual(this double a, double b)
 		{
 			return IsGreater(a, b) || IsEqual(a, b);
+		}
+
+		public static double Sqr(this double a)
+		{
+			return a * a;
 		}
 	}
 }

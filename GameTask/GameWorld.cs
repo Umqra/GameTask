@@ -36,7 +36,7 @@ namespace GameTask
 			{
 				player.Velocity = new Point(adding.x, player.Velocity.y);
 			}
-			else if (!world.CanMove(player, -adding.SetLength(0.1)))
+			else if (world.IsBodyOnGround(player, world.acceleration))
 			{
 				player.Velocity = new Point(player.Velocity.x, adding.y);
 			}

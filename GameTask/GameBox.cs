@@ -14,7 +14,7 @@ namespace GameTask
 	class GameBox : GameObject
 	{
 		public GameBox(Point center, double size, double mass, double friction)
-			: base(mass, new Point(0, 0), friction, false, null)
+			: base(Physics.Material.Wood, new Point(0, 0), friction, false, null)
 		{
 			Point v = new Point(size / 2, size / 2);
 			var points = new[]

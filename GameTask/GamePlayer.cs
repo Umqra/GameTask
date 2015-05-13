@@ -14,7 +14,7 @@ namespace GameTask
 	{
 		private const double PlayerWidth = 10;
 		private const double PlayerHeight = 20;
-		public GamePlayer(Point center) : base(10, new Point(0, 0), 1, false, null)
+		public GamePlayer(Point center) : base(Physics.Material.Wood, new Point(0, 0), 1, false, null)
 		{
 			Point v = new Point(PlayerWidth, PlayerHeight);
 			Shape = new ConvexPolygon(

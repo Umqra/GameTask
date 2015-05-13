@@ -12,6 +12,17 @@ namespace Physics
     public class PhysicalBody
     {
 	    public double Mass { get; set; }
+
+	    public void RecalcMass()
+	    {
+		    if (IsStatic)
+			    Mass = double.PositiveInfinity;
+		    else if (shape == null || material == null)
+			    Mass = 0;
+			else
+				Mass = Shape.GetArea() * Material.density;
+	    }
+
 	    public virtual Point Acceleration { get; set; }
 
 	    private Point velocity;
@@ -24,22 +35,50 @@ namespace Physics
 	    public double FrictionCoefficient { get; set; }
 		public bool IsStatic { get; set; }
 
-		public ConvexPolygon Shape { get; set; }
+	    private ConvexPolygon shape;
+	    public ConvexPolygon Shape
+	    {
+		    get { return shape; }
+		    set
+		    {
+			    shape = value;
+			    RecalcMass();
+		    }
+	    }
+
+	    private Material material;
+
+	    public Material Material
+	    {
+		    get { return material; }
+		    set
+		    {
+			    material = value;
+			    RecalcMass();
+		    }
+	    }
 
 	    public Point CenterOfMass
 	    {
 		    get { return Shape.GetCenterOfMass(); }
 	    }
 	    
-	    protected PhysicalBody(double mass, Point velocity, double friction, bool isStatic,
+	    protected PhysicalBody(Material material, Point velocity, double friction, bool isStatic,
 			ConvexPolygon shape)
 	    {
-		    this.Mass = mass;
-		    this.Acceleration = new Point(0, 0);
-		    this.Velocity = velocity;
-		    this.FrictionCoefficient = friction;
-		    this.IsStatic = isStatic;
-		    this.Shape = shape;
+		    if (shape == null)
+			    Mass = 0;
+			else if (isStatic)
+				Mass = double.PositiveInfinity;
+			else
+				Mass = shape.GetArea() * material.density;
+
+		    Material = material;
+			Acceleration = new Point(0, 0);
+		    Velocity = velocity;
+		    FrictionCoefficient = friction;
+		    IsStatic = isStatic;
+		    Shape = shape;
 	    }
 
 	    protected PhysicalBody()

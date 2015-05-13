@@ -43,7 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Circle.cs" />
-    <Compile Include="ComprasionDouble.cs" />
+    <Compile Include="DoubleExtensions.cs" />
     <Compile Include="GeometryOperations.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Point.cs" />
