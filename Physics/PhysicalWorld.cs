@@ -26,6 +26,11 @@ namespace Physics
 			bodies.Add(body);
 		}
 
+		public void RemoveBody(PhysicalBody body)
+		{
+			bodies.Remove(body);
+		}
+
 		public virtual bool IsBodiesCollided(PhysicalBody a, PhysicalBody b)
 		{
 			return a.Shape.IntersectWithPolygon(b.Shape).Count > 2;

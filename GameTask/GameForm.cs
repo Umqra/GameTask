@@ -15,20 +15,29 @@ namespace GameTask
 	class GameForm : Form
 	{
 		private const double fps = 100;
-		private GameWorld world;
+		private GameWorld mainWorld, shadowWorld;
 		private List<Keys> pressedKeys;
 		public GameForm()
-		{
+		{;
 			BackColor = System.Drawing.Color.DimGray;
 			pressedKeys = new List<Keys>();
 		
-			world = new GameWorld(new Geometry.Point(590, 100));
+			shadowWorld = new GameWorld(WorldType.ShadowWorld);
+			shadowWorld.AddGameObject(new GameWall(new[]
+			{
+				new Geometry.Point(500, 250),
+				new Geometry.Point(600, 300),
+				new Geometry.Point(600, 250),
+				new Geometry.Point(500, 300)
+			}, 2));
+			
+			mainWorld = new GameWorld(new Geometry.Point(590, 100), WorldType.MainWorld);
+			
+			mainWorld.AddGameObject(new GameBox(new Geometry.Point(540, 100), 10, 1));
+			mainWorld.AddGameObject(new GameBox(new Geometry.Point(570, 200), 10, 1));
+			mainWorld.AddGameObject(new GameBox(new Geometry.Point(600, 300), 20, 1));
 
-			world.AddGameObject(new GameBox(new Geometry.Point(540, 100), 10, 1));
-			world.AddGameObject(new GameBox(new Geometry.Point(570, 200), 10, 1));
-			world.AddGameObject(new GameBox(new Geometry.Point(600, 300), 20, 1));
-
-			world.AddGameObject(new GameWall(new []
+			mainWorld.AddGameObject(new GameWall(new []
 			{
 				new Geometry.Point(0, 200),
 				new Geometry.Point(500, 200),
@@ -36,7 +45,7 @@ namespace GameTask
 				new Geometry.Point(0, 600)
 			}, 2));
 
-			world.AddGameObject(new GameWall(new[]
+			mainWorld.AddGameObject(new GameWall(new[]
 			{
 				new Geometry.Point(500, 500),
 				new Geometry.Point(1000, 500),
@@ -52,7 +61,8 @@ namespace GameTask
 			timer.Tick += (sender, args) =>
 			{
 				time++;
-				world.OnTick(fps / 1000);
+				mainWorld.OnTick(fps / 1000);
+				shadowWorld.OnTick(fps / 1000);
 				ProcessKeys();
 				Invalidate();
 			};
@@ -63,7 +73,21 @@ namespace GameTask
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			world.OnPaint(e);
+			
+			shadowWorld.OnPaint(e);
+			mainWorld.OnPaint(e);
+		}
+
+		private void SwitchWorlds()
+		{
+			shadowWorld.SwitchWorldType();
+			mainWorld.SwitchWorldType();
+			var player = mainWorld.player;
+			mainWorld.RemoveGamePlayer(player);
+			shadowWorld.AddGamePlayer(player);
+			var tmp = mainWorld;
+			mainWorld = shadowWorld;
+			shadowWorld = tmp;
 		}
 
 		private void ProcessKeys()
@@ -71,16 +95,18 @@ namespace GameTask
 			foreach (var key in pressedKeys)
 			{
 				if (key == Keys.Left)
-					world.SetVelocityToPlayer(new Geometry.Point(-20, 0));
+					mainWorld.SetVelocityToPlayer(new Geometry.Point(-20, 0));
 				if (key == Keys.Right)
-					world.SetVelocityToPlayer(new Geometry.Point(20, 0));
+					mainWorld.SetVelocityToPlayer(new Geometry.Point(20, 0));
 				if (key == Keys.Up)
-					world.SetVelocityToPlayer(new Geometry.Point(0, -40));
+					mainWorld.SetVelocityToPlayer(new Geometry.Point(0, -40));
 			}
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			if (e.KeyCode == Keys.Space)
+				SwitchWorlds();
 			if (pressedKeys.Contains(e.KeyCode))
 				return;
 			pressedKeys.Add(e.KeyCode);

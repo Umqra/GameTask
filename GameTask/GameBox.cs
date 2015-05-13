@@ -17,7 +17,7 @@ namespace GameTask
 		const double Size = 70;
 		private int type;
 		public GameBox(Point center, double mass, double friction)
-			: base(Physics.Material.Wood, new Point(0, 0), friction, false, null)
+			: base(Physics.Material.Rock, new Point(0, 0), friction, false, null)
 		{
 			type = random.Next(1, 4);
 			Point v = new Point(Size / 2, Size / 2);

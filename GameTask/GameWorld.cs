@@ -15,21 +15,53 @@ namespace GameTask
 	{
 		private PhysicalWorld world;
 		private List<IDrawable> shapes;
-		private GamePlayer player;
+		public GamePlayer player;
+		private WorldType type;
 
-		public GameWorld(Point playerPosition)
+		public GameWorld(WorldType type)
 		{
+			this.type = type;
 			world = new PhysicalWorld();
 			shapes = new List<IDrawable>();
+			player = null;
+		}
+
+		public GameWorld(Point playerPosition, WorldType type) : this(type)
+		{
 			player = new GamePlayer(playerPosition);
-			world.AddBody(player);
-			shapes.Add(player);
+			AddGameObject(player);
+		}
+
+		public void SwitchWorldType()
+		{
+			type = type == WorldType.MainWorld ? WorldType.ShadowWorld : WorldType.MainWorld;
+		}
+
+		public void AddGamePlayer(GamePlayer player)
+		{
+			this.player = player;
+			AddGameObject(player);
+		}
+
+		public void RemoveGamePlayer(GamePlayer player)
+		{
+			if (this.player == player)
+			{
+				this.player = null;
+				RemoveGameObject(player);
+			}
 		}
 
 		public void AddGameObject(GameObject obj)
 		{
 			world.AddBody(obj);
 			shapes.Add(obj);
+		}
+
+		public void RemoveGameObject(GameObject obj)
+		{
+			world.RemoveBody(obj);
+			shapes.Remove(obj);
 		}
 
 		public void SetVelocityToPlayer(Point adding)
