@@ -11,8 +11,8 @@ namespace GameTask
 {
 	abstract class GameObject : PhysicalBody, IDrawable
 	{
-		protected GameObject(Material material, Point velocity, double friction, bool isStatic,
-			ConvexPolygon shape) : base(material, velocity, friction, isStatic, shape)
+		protected GameObject(Material material, Point velocity, bool isStatic,
+			ConvexPolygon shape) : base(material, velocity, isStatic, shape)
 		{
 			
 		}
@@ -20,6 +20,7 @@ namespace GameTask
 	    {
 		    
 	    }
-		public abstract void OnPaint(object sender, PaintEventArgs e);
+		public abstract void OnPaint(GameWorld sender, PaintEventArgs e);
+		public int Layer { get; set; }
 	}
 }

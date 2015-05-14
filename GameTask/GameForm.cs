@@ -18,51 +18,25 @@ namespace GameTask
 		private GameWorld mainWorld, shadowWorld;
 		private List<Keys> pressedKeys;
 		public GameForm()
-		{;
+		{
+
 			BackColor = System.Drawing.Color.DimGray;
 			pressedKeys = new List<Keys>();
-		
-			shadowWorld = new GameWorld(WorldType.ShadowWorld);
-			shadowWorld.AddGameObject(new GameWall(new[]
-			{
-				new Geometry.Point(500, 250),
-				new Geometry.Point(600, 300),
-				new Geometry.Point(600, 250),
-				new Geometry.Point(500, 300)
-			}, 2));
-			
-			mainWorld = new GameWorld(new Geometry.Point(590, 100), WorldType.MainWorld);
-			
-			mainWorld.AddGameObject(new GameBox(new Geometry.Point(540, 100), 10, 1));
-			mainWorld.AddGameObject(new GameBox(new Geometry.Point(570, 200), 10, 1));
-			mainWorld.AddGameObject(new GameBox(new Geometry.Point(600, 300), 20, 1));
 
-			mainWorld.AddGameObject(new GameWall(new []
-			{
-				new Geometry.Point(0, 200),
-				new Geometry.Point(500, 200),
-				new Geometry.Point(500, 600),
-				new Geometry.Point(0, 600)
-			}, 2));
-
-			mainWorld.AddGameObject(new GameWall(new[]
-			{
-				new Geometry.Point(500, 500),
-				new Geometry.Point(1000, 500),
-				new Geometry.Point(1000, 600),
-				new Geometry.Point(500, 600)
-			}, 2));
-
+			var worlds = LevelLoader.LoadLevel("../../../level1.txt");
+			mainWorld = worlds.Item1;
+			shadowWorld = worlds.Item2;
+	
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
 			var time = 0;
 			var timer = new Timer();
-			timer.Interval = (int) (1 / fps * 1000);
+			timer.Interval = (int) (1000 / fps);
 			timer.Tick += (sender, args) =>
 			{
 				time++;
-				mainWorld.OnTick(fps / 1000);
-				shadowWorld.OnTick(fps / 1000);
+				mainWorld.OnTick(10 / fps);
+				shadowWorld.OnTick(10 / fps);
 				ProcessKeys();
 				Invalidate();
 			};

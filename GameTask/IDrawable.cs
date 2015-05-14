@@ -9,6 +9,7 @@ namespace GameTask
 {
 	interface IDrawable
 	{
-		void OnPaint(object sender, PaintEventArgs e);
+		void OnPaint(GameWorld sender, PaintEventArgs e);
+		int Layer { get; set; }
 	}
 }

@@ -57,11 +57,13 @@
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GameGround.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GamePlayer.cs" />
     <Compile Include="GameWall.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="IDrawable.cs" />
+    <Compile Include="LevelLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WorldType.cs" />
@@ -89,6 +91,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DrawingExtensions\DrawingExtensions.csproj">
+      <Project>{3a4073e8-eea6-4b85-9fc1-602016e9eda5}</Project>
+      <Name>DrawingExtensions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Geometry\Geometry.csproj">
       <Project>{03d4988f-1f5f-4a53-addb-2de0a7040a9c}</Project>
       <Name>Geometry</Name>

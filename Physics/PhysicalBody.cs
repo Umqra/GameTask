@@ -32,7 +32,6 @@ namespace Physics
 		    set { if (!IsStatic) velocity = value; }
 	    }
 
-	    public double FrictionCoefficient { get; set; }
 		public bool IsStatic { get; set; }
 
 	    private ConvexPolygon shape;
@@ -63,7 +62,7 @@ namespace Physics
 		    get { return Shape.GetCenterOfMass(); }
 	    }
 	    
-	    protected PhysicalBody(Material material, Point velocity, double friction, bool isStatic,
+	    protected PhysicalBody(Material material, Point velocity, bool isStatic,
 			ConvexPolygon shape)
 	    {
 		    if (shape == null)
@@ -76,7 +75,6 @@ namespace Physics
 		    Material = material;
 			Acceleration = new Point(0, 0);
 		    Velocity = velocity;
-		    FrictionCoefficient = friction;
 		    IsStatic = isStatic;
 		    Shape = shape;
 	    }

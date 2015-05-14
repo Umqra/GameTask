@@ -16,14 +16,18 @@ namespace GameTask
 		private PhysicalWorld world;
 		private List<IDrawable> shapes;
 		public GamePlayer player;
-		private WorldType type;
+		public WorldType Type { get; set; }
 
-		public GameWorld(WorldType type)
+		public GameWorld()
 		{
-			this.type = type;
 			world = new PhysicalWorld();
 			shapes = new List<IDrawable>();
 			player = null;
+		}
+
+		public GameWorld(WorldType type) : this()
+		{
+			Type = type;
 		}
 
 		public GameWorld(Point playerPosition, WorldType type) : this(type)
@@ -34,7 +38,7 @@ namespace GameTask
 
 		public void SwitchWorldType()
 		{
-			type = type == WorldType.MainWorld ? WorldType.ShadowWorld : WorldType.MainWorld;
+			Type = Type == WorldType.MainWorld ? WorldType.ShadowWorld : WorldType.MainWorld;
 		}
 
 		public void AddGamePlayer(GamePlayer player)
@@ -52,10 +56,12 @@ namespace GameTask
 			}
 		}
 
-		public void AddGameObject(GameObject obj)
+		public void AddGameObject(GameObject obj, int layer = -1)
 		{
+			obj.Layer = layer;
 			world.AddBody(obj);
 			shapes.Add(obj);
+			shapes = shapes.OrderBy(x => x.Layer).ToList();
 		}
 
 		public void RemoveGameObject(GameObject obj)

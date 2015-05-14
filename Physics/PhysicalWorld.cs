@@ -65,9 +65,12 @@ namespace Physics
 		public virtual void ResolveCollision(PhysicalBody a, PhysicalBody b, double dt)
 		{
 			var delta = GetVectorForResolveCollision(a, b);
+			if (delta.Length.IsEqual(0))
+				return;
+			
 			var relativeVelocity = a.Velocity - b.Velocity;
 			CorrectPositions(a, b, delta);
-			if (delta.Length.IsEqual(0) || relativeVelocity.DotProductWith(delta).IsGreater(0))
+			if (relativeVelocity.DotProductWith(delta).IsGreater(0))
 				return;
 			var normal = delta.SetLength(1);
 

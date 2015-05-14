@@ -1,30 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DrawingExtensions;
 using Geometry;
 using Physics;
 using Point = Geometry.Point;
-
+	
 namespace GameTask
 {
 	class GameWall : GameObject
 	{
-		public GameWall(Point[] points, double friction)
-			: base(Physics.Material.Rock, new Point(0, 0), friction, true, null)
+		private static readonly Image WallImageMain = Image.FromFile("../../../pictures/wall1.png");
+		private static readonly Image WallImageShadow = WallImageMain.ChangeOpacity(0.2f);
+		private double width, height;
+
+		public GameWall(Point center, double width, double height)
+			: base(Physics.Material.Rock, new Point(0, 0), true, null)
 		{
+			this.width = width;
+			this.height = height;
+			Point v = new Point(width / 2, height / 2);
+			var points = new[]
+			{
+				center + v, center + v.RotateAroundOrigin(Math.PI / 2),
+				center - v, center - v.RotateAroundOrigin(Math.PI / 2)
+			};
 			Shape = new ConvexPolygon(points);
 		}
 
-		public override void OnPaint(object sender, PaintEventArgs e)
+		public Image Representation(GameWorld gameWorld)
+		{
+			return gameWorld.Type == WorldType.MainWorld ? WallImageMain : WallImageShadow;
+		}
+
+		public override void OnPaint(GameWorld gameWorld, PaintEventArgs e)
 		{
 			var graphics = e.Graphics;
-			graphics.FillPolygon(Brushes.Black,
-				Shape.Select(p => new PointF((float)p.x, (float)p.y)).ToArray()
-				);
+		
+			graphics.DrawImage(Representation(gameWorld),
+				(float)Shape[0].x, (float)Shape[0].y, (float)width, (float)height);
 		}
 	}
 }
