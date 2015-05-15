@@ -24,9 +24,9 @@ namespace GameTask
 					center - v, center - v.RotateAroundOrigin(Math.PI - 2 * v.GetAngle())
 				});
 		}
-		public override void OnPaint(GameWorld gameWorld, PaintEventArgs e)
+
+		public override void OnPaint(GameWorld gameWorld, Graphics graphics)
 		{
-			var graphics = e.Graphics;
 			graphics.DrawImage(Image.FromFile("../../../pictures/player.png"),
 				(float)Shape[0].x, (float)Shape[0].y, (float)PlayerWidth, (float)PlayerHeight);
 		}

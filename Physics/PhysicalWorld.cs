@@ -13,9 +13,11 @@ namespace Physics
 	{
 		public Point acceleration;
 		public List<PhysicalBody> bodies;
+		public List<Tuple<PhysicalBody, PhysicalBody>> collisions; 
 
 		public PhysicalWorld()
 		{
+			collisions = new List<Tuple<PhysicalBody, PhysicalBody>>();
 			acceleration = new Point(0, 9.8);
 			bodies = new List<PhysicalBody>();
 		}
@@ -117,13 +119,19 @@ namespace Physics
 
 		public void OnTick(double dt)
 		{
+			collisions.Clear();
 			foreach (var body in bodies)
 				body.OnTick(dt);
 			for (int i = 0; i < bodies.Count; i++)
 				for (int s = i + 1; s < bodies.Count; s++)
 				{
+					if (bodies[i].IsStatic && bodies[s].IsStatic)
+						continue;
 					if (IsBodiesCollided(bodies[i], bodies[s]))
+					{
 						ResolveCollision(bodies[i], bodies[s], dt);
+						collisions.Add(Tuple.Create(bodies[i], bodies[s]));
+					}
 				}
 		}
 	}

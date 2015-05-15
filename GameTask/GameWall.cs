@@ -38,10 +38,8 @@ namespace GameTask
 			return gameWorld.Type == WorldType.MainWorld ? WallImageMain : WallImageShadow;
 		}
 
-		public override void OnPaint(GameWorld gameWorld, PaintEventArgs e)
+		public override void OnPaint(GameWorld gameWorld, Graphics graphics)
 		{
-			var graphics = e.Graphics;
-		
 			graphics.DrawImage(Representation(gameWorld),
 				(float)Shape[0].x, (float)Shape[0].y, (float)width, (float)height);
 		}

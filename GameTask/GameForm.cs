@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Configuration;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Geometry;
-using Physics;
 
 namespace GameTask
 {
@@ -19,7 +11,6 @@ namespace GameTask
 		private List<Keys> pressedKeys;
 		public GameForm()
 		{
-
 			BackColor = System.Drawing.Color.DimGray;
 			pressedKeys = new List<Keys>();
 
@@ -30,13 +21,13 @@ namespace GameTask
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
 			var time = 0;
-			var timer = new Timer();
-			timer.Interval = (int) (1000 / fps);
+			var timer = new Timer {Interval = (int) (1000 / fps)};
 			timer.Tick += (sender, args) =>
 			{
 				time++;
 				mainWorld.OnTick(10 / fps);
 				shadowWorld.OnTick(10 / fps);
+				CenterThePlayer();
 				ProcessKeys();
 				Invalidate();
 			};
@@ -44,10 +35,20 @@ namespace GameTask
 			timer.Start();
 		}
 
+		private void CenterThePlayer()
+		{
+			double shift = 0;
+			if (mainWorld.player.Shape[0].x + mainWorld.currentShift < 40)
+				shift = 100;
+			else if (mainWorld.player.Shape[0].x + mainWorld.currentShift > Width - 100)
+				shift = -100;
+			mainWorld.ShiftWorld(shift);
+			shadowWorld.ShiftWorld(shift);
+		}
+
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			
 			shadowWorld.OnPaint(e);
 			mainWorld.OnPaint(e);
 		}

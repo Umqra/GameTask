@@ -17,10 +17,8 @@ namespace GameTask
 			var lines = File.ReadAllLines(filename);
 			var sizes = lines[0].Split(' ');
 			int h = int.Parse(sizes[0]), w = int.Parse(sizes[1]);
-			var firstWorld = LoadWorld(lines.Skip(2).Take(h).ToList());
-			var secondWorld = LoadWorld(lines.Skip(3 + h).Take(h).ToList());
-			firstWorld.Type = WorldType.MainWorld;
-			secondWorld.Type = WorldType.ShadowWorld;
+			var firstWorld = LoadWorld(lines.Skip(2).Take(h).ToList(), WorldType.MainWorld);
+			var secondWorld = LoadWorld(lines.Skip(3 + h).Take(h).ToList(), WorldType.ShadowWorld);
 			return Tuple.Create(firstWorld, secondWorld);
 		}
 
@@ -44,9 +42,9 @@ namespace GameTask
 			return null;
 		}
 
-		public static GameWorld LoadWorld(List<string> lines)
+		public static GameWorld LoadWorld(List<string> lines, WorldType type)
 		{
-			var world = new GameWorld();
+			var world = new GameWorld(type);
 			for (var i = 0; i < lines.Count; i++)
 			{
 				for (int s = 0; s < lines[i].Length; s++)
@@ -58,7 +56,7 @@ namespace GameTask
 					if (newObject is GamePlayer)
 						world.AddGamePlayer(newObject as GamePlayer);
 					else if (newObject is GameGround || newObject is GameWall)
-						world.AddGameObject(newObject, 0);
+						world.AddGameObject(newObject, 1);
 					else
 						world.AddGameObject(newObject);
 				}

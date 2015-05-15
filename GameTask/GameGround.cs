@@ -50,10 +50,8 @@ namespace GameTask
 			return gameWorld.Type == WorldType.MainWorld ? GroundImagesMain[type] : GroundImagesShadow[type];
 		}
 
-		public override void OnPaint(GameWorld gameWorld, PaintEventArgs e)
+		public override void OnPaint(GameWorld gameWorld, Graphics graphics)
 		{
-			float opacity = gameWorld.Type == WorldType.MainWorld ? 1.0f : 0.2f;
-			var graphics = e.Graphics;
 			graphics.DrawImage(Representation(gameWorld),
 				(float)Shape[0].x, (float)Shape[0].y - 10, (float)width, (float)height + 20);
 		}
