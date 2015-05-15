@@ -5,30 +5,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DrawingExtensions;
 using Geometry;
+using Physics;
 using Point = Geometry.Point;
 
 namespace GameTask
 {
 	class GamePlayer : GameObject
 	{
-		private const double PlayerWidth = 50;
-		private const double PlayerHeight = 50;
+		private static readonly Image PlayerImageMain = Image.FromFile("../../../pictures/player.png");
+		private static readonly Image PlayerImageShadow = PlayerImageMain.ChangeOpacity(0.2f);
+		
+		public bool Alive { get; set; }
+		private const double Width = 50;
+		private const double Height = 50;
 		public GamePlayer(Point center) : base(Physics.Material.Wood, new Point(0, 0), false, null)
 		{
-			Point v = new Point(PlayerWidth / 2, PlayerHeight / 2);
-			Shape = new ConvexPolygon(
-				new[]
-				{
-					center + v, center + v.RotateAroundOrigin(Math.PI - 2 * v.GetAngle()),
-					center - v, center - v.RotateAroundOrigin(Math.PI - 2 * v.GetAngle())
-				});
+			Alive = true;
+			Shape = ConvexPolygon.Rectangle(center, Width, Height);
+		}
+
+		public override void HandleCollision(Collision collision)
+		{
+			if (collision.penetration.IsGreaterOrEqual(10))
+				Alive = false;
+		}
+
+		public Image Representation(GameWorld gameWorld)
+		{
+			return gameWorld.Type == WorldType.MainWorld ? PlayerImageMain : PlayerImageShadow;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)
 		{
-			graphics.DrawImage(Image.FromFile("../../../pictures/player.png"),
-				(float)Shape[0].x, (float)Shape[0].y, (float)PlayerWidth, (float)PlayerHeight);
+			graphics.DrawImage(Representation(gameWorld),
+				(float)Shape[0].x, (float)Shape[0].y, (float)Width, (float)Height);
 		}
 	}
 }

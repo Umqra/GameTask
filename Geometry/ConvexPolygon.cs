@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,16 @@ namespace Geometry
 		public ConvexPolygon(params Point[] points)
 		{
 			this.points = GeometryOperations.BuildConvexHull(points.ToList());
+		}
+
+		public static ConvexPolygon Rectangle(Point center, double width, double height)
+		{
+			Point v = new Point(width / 2, height / 2);
+			Point u = new Point(-width / 2, height / 2);
+			return new ConvexPolygon(
+				center + v, center + u,
+				center - v, center - u
+				);
 		}
 
 		public List<Point> GetBoundingBox()

@@ -11,14 +11,14 @@ namespace Physics
 {
 	public class PhysicalWorld
 	{
-		public Point acceleration;
+		public static readonly Point acceleration = new Point(0, 9.8);
 		public List<PhysicalBody> bodies;
-		public List<Tuple<PhysicalBody, PhysicalBody>> collisions; 
+		public List<Collision> collisions; 
 
 		public PhysicalWorld()
 		{
-			collisions = new List<Tuple<PhysicalBody, PhysicalBody>>();
-			acceleration = new Point(0, 9.8);
+			collisions = new List<Collision>();
+			
 			bodies = new List<PhysicalBody>();
 		}
 
@@ -33,12 +33,12 @@ namespace Physics
 			bodies.Remove(body);
 		}
 
-		public virtual bool IsBodiesCollided(PhysicalBody a, PhysicalBody b)
+		public static bool IsBodiesCollided(PhysicalBody a, PhysicalBody b)
 		{
 			return a.Shape.IntersectWithPolygon(b.Shape).Count > 2;
 		}
 
-		public Point GetVectorForResolveCollision(PhysicalBody a, PhysicalBody b)
+		public static Point GetVectorForResolveCollision(PhysicalBody a, PhysicalBody b)
 		{
 			var intersection = a.Shape.IntersectWithPolygon(b.Shape);
 			if (intersection.Count < 3)
@@ -53,7 +53,7 @@ namespace Physics
 			return -bestDirection;
 		}
 
-		public virtual void CorrectPositions(PhysicalBody a, PhysicalBody b, Point direction)
+		public static void CorrectPositions(PhysicalBody a, PhysicalBody b, Point direction)
 		{
 			const double percentage = 1;
 			const double slop = 0.1;
@@ -64,9 +64,10 @@ namespace Physics
 			b.Shape = b.Shape.Move(-correction * (1 / b.Mass));
 		}
 
-		public virtual void ResolveCollision(PhysicalBody a, PhysicalBody b, double dt)
+		public static void ResolveCollision(PhysicalBody a, PhysicalBody b, double dt)
 		{
 			var delta = GetVectorForResolveCollision(a, b);
+			
 			if (delta.Length.IsEqual(0))
 				return;
 			
@@ -98,7 +99,7 @@ namespace Physics
 			return false;
 		}
 
-		public virtual void ApplyFrictionForces(PhysicalBody a, PhysicalBody b, Point normalImpulse)
+		public static void ApplyFrictionForces(PhysicalBody a, PhysicalBody b, Point normalImpulse)
 		{
 			var relativeVelocity = a.Velocity - b.Velocity;
 			var ort = normalImpulse.RotateAroundOrigin(Math.PI / 2);
@@ -129,8 +130,9 @@ namespace Physics
 						continue;
 					if (IsBodiesCollided(bodies[i], bodies[s]))
 					{
+						var penetration = GetVectorForResolveCollision(bodies[i], bodies[s]).Length;
 						ResolveCollision(bodies[i], bodies[s], dt);
-						collisions.Add(Tuple.Create(bodies[i], bodies[s]));
+						collisions.Add(new Collision(bodies[i], bodies[s], penetration));
 					}
 				}
 		}

@@ -12,14 +12,14 @@ namespace GameTask
 	{
 		public const double CellWidth = 50;
 		public const double CellHeight = 50;
-		public static Tuple<GameWorld, GameWorld> LoadLevel(string filename)
+		public static Game LoadLevel(string filename)
 		{
 			var lines = File.ReadAllLines(filename);
 			var sizes = lines[0].Split(' ');
 			int h = int.Parse(sizes[0]), w = int.Parse(sizes[1]);
 			var firstWorld = LoadWorld(lines.Skip(2).Take(h).ToList(), WorldType.MainWorld);
 			var secondWorld = LoadWorld(lines.Skip(3 + h).Take(h).ToList(), WorldType.ShadowWorld);
-			return Tuple.Create(firstWorld, secondWorld);
+			return new Game(firstWorld, secondWorld);
 		}
 
 		public static GameObject GetGameObject(int x, int y, char type)
@@ -38,6 +38,8 @@ namespace GameTask
 					return new GameBox((A + C) / 2);
 				case 'G':
 					return new GameGround((A + C) / 2, CellWidth, CellHeight);
+				case 'K':
+					return new GameButton((A + C) / 2);
 			}
 			return null;
 		}

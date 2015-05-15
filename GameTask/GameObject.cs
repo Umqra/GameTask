@@ -11,7 +11,7 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	abstract class GameObject : PhysicalBody, IDrawable
+	abstract class GameObject : PhysicalBody
 	{
 		protected GameObject(Material material, Point velocity, bool isStatic,
 			ConvexPolygon shape) : base(material, velocity, isStatic, shape)
@@ -30,7 +30,7 @@ namespace GameTask
 			OnPaint(sender, e.Graphics);
 		}
 
-		public virtual void CollisionWith(GameObject obj)
+		public virtual void HandleCollision(Collision collision)
 		{
 			
 		}

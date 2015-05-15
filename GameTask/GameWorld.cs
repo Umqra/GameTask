@@ -11,8 +11,9 @@ namespace GameTask
 {
 	class GameWorld
 	{
+		public Game game;
 		private PhysicalWorld world;
-		private List<IDrawable> shapes;
+		public List<GameObject> Shapes { get; private set; }
 		public GamePlayer player;
 		public WorldType Type { get; set; }
 		private Bitmap StaticImage;
@@ -34,10 +35,11 @@ namespace GameTask
 
 		public GameWorld()
 		{
+			game = null;
 			currentShift = neededShift = 0;
 			StaticImage = new Bitmap(2000, 800);
 			world = new PhysicalWorld();
-			shapes = new List<IDrawable>();
+			Shapes = new List<GameObject>();
 			player = null;
 		}
 
@@ -69,7 +71,7 @@ namespace GameTask
 			StaticImage = new Bitmap(800, 800);
 			var graphics = Graphics.FromImage(StaticImage);
 			graphics.TranslateTransform((float)currentShift, 0);
-			foreach (var shape in shapes)
+			foreach (var shape in Shapes)
 			{
 				if (shape.IsStatic)
 					shape.OnPaint(this, graphics);
@@ -95,15 +97,15 @@ namespace GameTask
 		{
 			obj.Layer = layer;
 			world.AddBody(obj);
-			shapes.Add(obj);
-			shapes = shapes.OrderBy(x => x.Layer).ToList();
+			Shapes.Add(obj);
+			Shapes = Shapes.OrderBy(x => x.Layer).ToList();
 			InitializeStaticImage();
 		}
 
 		public void RemoveGameObject(GameObject obj)
 		{
 			world.RemoveBody(obj);
-			shapes.Remove(obj);
+			Shapes.Remove(obj);
 			InitializeStaticImage();
 		}
 
@@ -113,7 +115,7 @@ namespace GameTask
 			{
 				player.Velocity = new Point(adding.x, player.Velocity.y);
 			}
-			else if (world.IsBodyOnGround(player, world.acceleration))
+			else if (world.IsBodyOnGround(player, PhysicalWorld.acceleration))
 			{
 				player.Velocity = new Point(player.Velocity.x, adding.y);
 			}
@@ -121,14 +123,14 @@ namespace GameTask
 
 		public void HandleCollisions()
 		{
-			foreach (var pair in world.collisions)
+			foreach (var collision in world.collisions)
 			{
-				var first = pair.Item1 as GameObject;
-				var second = pair.Item2 as GameObject;
+				var first = collision.a as GameObject;
+				var second = collision.b as GameObject;
 				if (first != null && second != null)
 				{
-					first.CollisionWith(second);
-					second.CollisionWith(first);
+					first.HandleCollision(collision);
+					second.HandleCollision(collision);
 				}
 			}
 		}
@@ -138,15 +140,17 @@ namespace GameTask
 			world.OnTick(dt);
 			ChangeShift();
 			HandleCollisions();
+
 		}
 
 		public void OnPaint(PaintEventArgs e)
 		{
 			e.Graphics.TranslateTransform((float)currentShift, 0);
-			foreach (var shape in shapes)
+			foreach (var obj in Shapes)
 			{
-				//if (shape.IsStatic) continue;
-				shape.OnPaint(this, e);
+				if (obj.Shape.Any(p => GeometryOperations.IsPointInRectangle(p, 
+					-currentShift, 0, -currentShift + game.Width, game.Height)))
+					obj.OnPaint(this, e);
 			}
 			e.Graphics.TranslateTransform(-(float) currentShift, 0);
 			//e.Graphics.DrawImage(StaticImage, new PointF(0, 0));

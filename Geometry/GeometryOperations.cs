@@ -11,6 +11,12 @@ namespace Geometry
 	public class GeometryOperations
 	{
 		// ReSharper disable InconsistentNaming
+		public static bool IsPointInRectangle(Point P, double x1, double y1, double x2, double y2)
+		{
+			return P.x.IsGreaterOrEqual(x1) && P.x.IsLessOrEqual(x2) &&
+			       P.y.IsGreaterOrEqual(y1) && P.y.IsLessOrEqual(y2);
+		}
+
 		public static bool IsPointOnLine(Point P, Line line)
 		{
 			return (line.A - P).CrossProductWith(line.B - P).IsEqual(0);
