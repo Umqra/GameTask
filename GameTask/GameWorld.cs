@@ -56,7 +56,7 @@ namespace GameTask
 
 		public void ShiftWorld(double shift)
 		{
-			if (neededShift.IsEqual(currentShift))
+			if (neededShift.IsEqual(currentShift) && neededShift + shift <= 0)
 				neededShift += shift;
 		}
 
@@ -135,12 +135,25 @@ namespace GameTask
 			}
 		}
 
+		public void DeleteOutsideObjects()
+		{
+			foreach (var obj in Shapes)
+			{
+				if (obj.Shape.GetBoundingBox()[0].y > 1400)
+				{
+					obj.OnDelete();
+					world.RemoveBody(obj);
+				}
+			}
+			Shapes = Shapes.Where(obj => obj.Shape.GetBoundingBox()[0].y <= 1400).ToList();
+		}
+
 		public void OnTick(double dt)
 		{
 			world.OnTick(dt);
 			ChangeShift();
 			HandleCollisions();
-
+			DeleteOutsideObjects();
 		}
 
 		public void OnPaint(PaintEventArgs e)
@@ -153,7 +166,6 @@ namespace GameTask
 					obj.OnPaint(this, e);
 			}
 			e.Graphics.TranslateTransform(-(float) currentShift, 0);
-			//e.Graphics.DrawImage(StaticImage, new PointF(0, 0));
 		}
 	}
 }

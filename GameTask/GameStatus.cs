@@ -9,6 +9,7 @@ namespace GameTask
 	enum GameStatus
 	{
 		Running, 
-		GameOver
+		GameOver,
+		NextLevel
 	}
 }

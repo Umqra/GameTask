@@ -30,6 +30,11 @@ namespace GameTask
 			OnPaint(sender, e.Graphics);
 		}
 
+		public virtual void OnDelete()
+		{
+			
+		}
+
 		public virtual void HandleCollision(Collision collision)
 		{
 			

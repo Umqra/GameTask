@@ -12,14 +12,14 @@ namespace GameTask
 	{
 		public const double CellWidth = 50;
 		public const double CellHeight = 50;
-		public static Game LoadLevel(string filename)
+		public static Game LoadLevel(int level, string filename)
 		{
-			var lines = File.ReadAllLines(filename);
+			var lines = File.ReadAllLines(filename, Encoding.UTF8);
 			var sizes = lines[0].Split(' ');
 			int h = int.Parse(sizes[0]), w = int.Parse(sizes[1]);
 			var firstWorld = LoadWorld(lines.Skip(2).Take(h).ToList(), WorldType.MainWorld);
 			var secondWorld = LoadWorld(lines.Skip(3 + h).Take(h).ToList(), WorldType.ShadowWorld);
-			return new Game(firstWorld, secondWorld);
+			return new Game(firstWorld, secondWorld, new TextModule(level, lines.Skip(3 + 2 * h).ToArray()));
 		}
 
 		public static GameObject GetGameObject(int x, int y, char type)
@@ -40,6 +40,8 @@ namespace GameTask
 					return new GameGround((A + C) / 2, CellWidth, CellHeight);
 				case 'K':
 					return new GameButton((A + C) / 2);
+				case 'E':
+					return new GameExit((A + C) / 2);
 			}
 			return null;
 		}
@@ -57,7 +59,7 @@ namespace GameTask
 						continue;
 					if (newObject is GamePlayer)
 						world.AddGamePlayer(newObject as GamePlayer);
-					else if (newObject is GameGround || newObject is GameWall)
+					else if (newObject.IsStatic)
 						world.AddGameObject(newObject, 1);
 					else
 						world.AddGameObject(newObject);

@@ -56,6 +56,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameBox.cs" />
     <Compile Include="GameButton.cs" />
+    <Compile Include="GameExit.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +69,7 @@
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextModule.cs" />
     <Compile Include="WorldType.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

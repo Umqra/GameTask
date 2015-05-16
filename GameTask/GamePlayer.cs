@@ -17,17 +17,22 @@ namespace GameTask
 		private static readonly Image PlayerImageMain = Image.FromFile("../../../pictures/player.png");
 		private static readonly Image PlayerImageShadow = PlayerImageMain.ChangeOpacity(0.2f);
 		
+		public bool Exit { get; set; }
 		public bool Alive { get; set; }
 		private const double Width = 50;
 		private const double Height = 50;
 		public GamePlayer(Point center) : base(Physics.Material.Wood, new Point(0, 0), false, null)
 		{
 			Alive = true;
+			Exit = false;
 			Shape = ConvexPolygon.Rectangle(center, Width, Height);
 		}
 
 		public override void HandleCollision(Collision collision)
 		{
+			var target = collision.a == this ? collision.b : collision.a;
+			if (target is GameExit)
+				Exit = true;
 			if (collision.penetration.IsGreaterOrEqual(10))
 				Alive = false;
 		}
@@ -35,6 +40,11 @@ namespace GameTask
 		public Image Representation(GameWorld gameWorld)
 		{
 			return gameWorld.Type == WorldType.MainWorld ? PlayerImageMain : PlayerImageShadow;
+		}
+
+		public override void OnDelete()
+		{
+			Alive = false;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)

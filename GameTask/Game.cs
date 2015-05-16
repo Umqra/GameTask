@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NUnit.Framework;
 
 namespace GameTask
 {
@@ -11,21 +12,18 @@ namespace GameTask
 	{
 		public double Width, Height;
 		public GameStatus status;
+		public TextModule textModule;
 		public GameWorld mainWorld;
 		public GameWorld shadowWorld;
 
-		public Game(GameWorld main, GameWorld shadow)
+		public Game(GameWorld main, GameWorld shadow, TextModule textModule)
 		{
+			this.textModule = textModule;
 			Width = Height = 800;
 			status = GameStatus.Running;
 			mainWorld = main;
 			shadowWorld = shadow;
 			mainWorld.game = shadowWorld.game = this;
-		}
-
-		public static Game LoadGame(string filename)
-		{
-			return LevelLoader.LoadLevel(filename);
 		}
 
 		private void SwitchWorlds()
@@ -42,6 +40,7 @@ namespace GameTask
 
 		public void OnPaint(PaintEventArgs e)
 		{
+			textModule.OnPaint(e);
 			shadowWorld.OnPaint(e);
 			mainWorld.OnPaint(e);
 		}
@@ -69,15 +68,17 @@ namespace GameTask
 		{
 			if (!mainWorld.player.Alive)
 				status = GameStatus.GameOver;
+			else if (mainWorld.player.Exit)
+				status = GameStatus.NextLevel;	
 		}
 
 		private void CenterThePlayer()
 		{
 			double shift = 0;
-			if (mainWorld.player.Shape[0].x + mainWorld.currentShift < 40)
-				shift = 100;
-			else if (mainWorld.player.Shape[0].x + mainWorld.currentShift > Width - 100)
-				shift = -100;
+			if (mainWorld.player.Shape[0].x + mainWorld.currentShift < 100)
+				shift = 300;
+			else if (mainWorld.player.Shape[0].x + mainWorld.currentShift > Width - 200)
+				shift = -300;
 			mainWorld.ShiftWorld(shift);
 			shadowWorld.ShiftWorld(shift);
 		}

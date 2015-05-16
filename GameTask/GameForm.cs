@@ -10,12 +10,14 @@ namespace GameTask
 		private const double fps = 100;
 		private Game game;
 		private List<Keys> pressedKeys;
+		private int levelNumber;
 		public GameForm()
 		{
+			levelNumber = 1;
 			BackColor = System.Drawing.Color.DimGray;
 			pressedKeys = new List<Keys>();
 
-			game = LevelLoader.LoadLevel("../../../level1.txt");
+			game = LevelLoader.LoadLevel(levelNumber, "../../../level1.txt");
 	
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
@@ -24,6 +26,7 @@ namespace GameTask
 			timer.Tick += (sender, args) =>
 			{
 				time++;
+				CheckGameStatus();
 				game.OnTick(10 / fps);
 				ProcessKeys();
 				Invalidate();
@@ -32,6 +35,22 @@ namespace GameTask
 			timer.Start();
 		}
 
+		private void CheckGameStatus()
+		{
+			if (game.status == GameStatus.NextLevel)
+			{
+				levelNumber++;
+				game = LevelLoader.LoadLevel(levelNumber, String.Format("../../../level{0}.txt", levelNumber));
+				game.Width = Width;
+				game.Height = Height;
+			}
+			if (game.status == GameStatus.GameOver)
+			{
+				game = LevelLoader.LoadLevel(levelNumber, String.Format("../../../level{0}.txt", levelNumber));
+				game.Width = Width;
+				game.Height = Height;
+			}
+		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
