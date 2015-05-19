@@ -17,7 +17,7 @@ namespace GameTask
 			BackColor = Color.DimGray;
 			pressedKeys = new List<Keys>();
 
-			game = LevelLoader.LoadLevel(levelNumber, "../../../level8.txt");
+			game = LevelLoader.LoadLevel(levelNumber, "../../../level1.txt");
 	
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
