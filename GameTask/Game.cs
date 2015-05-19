@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Geometry;
 using NUnit.Framework;
 
 namespace GameTask
@@ -48,7 +49,7 @@ namespace GameTask
 
 		public void OnPaint(PaintEventArgs e)
 		{
-			if (status == GameStatus.ShowLevelText)
+			if (status == GameStatus.ShowLevelText || status == GameStatus.ShowEndText)
 				textModule.OnPaint(e);
 			else
 			{
@@ -88,7 +89,26 @@ namespace GameTask
 		{
 			if (textModule.Empty() && status == GameStatus.ShowLevelText)
 				status = GameStatus.Running;
-			if (status == GameStatus.GameOver || status == GameStatus.ShowLevelText)
+			if (textModule.Empty() && status == GameStatus.ShowEndText)
+				status = GameStatus.GameEnd;
+			if (mainWorld.Shapes.Any(p => p is PlayerBrother) &&
+			    mainWorld.world.IsBodyOnGround(mainWorld.player, new Point(0, 1)) &&
+			    status == GameStatus.Running)
+			{
+				textModule = new TextModule(
+					   new[]
+					{
+						"- Братья! Я так долго искал вас!",
+						"- Не шуми. Мы тоже рады тебе. Но нам стоит поторопиться...",
+						"Следуй за нами...",
+						"MAY BE TO BE CONTINUED..."
+					});
+				status = GameStatus.ShowEndText;
+			}
+			if (status == GameStatus.GameOver || 
+				status == GameStatus.ShowLevelText || 
+				status == GameStatus.GameEnd ||
+				status == GameStatus.ShowEndText)
 				return;
 			shadowWorld.OnTick(dt);
 			mainWorld.OnTick(dt);

@@ -13,7 +13,7 @@ namespace GameTask
 	{
 		public Game game;
 		public GameWorld anotherWorld;
-		private readonly PhysicalWorld world;
+		public readonly PhysicalWorld world;
 		public List<GameObject> Shapes { get; private set; }
 		public Player player;
 		public WorldType Type { get; set; }
@@ -29,18 +29,18 @@ namespace GameTask
 			bool changed = false;
 			if (deltaX.IsNotEqual(0))
 			{
-				if (Math.Abs(deltaX) < 1)
+				if (Math.Abs(deltaX) < 3)
 					currentShiftX += deltaX;
 				else
-					currentShiftX += deltaX / Math.Abs(deltaX) * 2;
+					currentShiftX += deltaX / Math.Abs(deltaX) * 3;
 				changed = true;
 			}
 			if (deltaY.IsNotEqual(0))
 			{
-				if (Math.Abs(deltaY) < 1)
+				if (Math.Abs(deltaY) < 3)
 					currentShiftY += deltaY;
 				else
-					currentShiftY += deltaY / Math.Abs(deltaY) * 2;
+					currentShiftY += deltaY / Math.Abs(deltaY) * 3;
 				changed = true;
 			}
 			if (changed)

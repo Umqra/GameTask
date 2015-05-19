@@ -65,6 +65,7 @@
     <Compile Include="IceWall.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameStatus.cs" />
+    <Compile Include="PlayerBrother.cs" />
     <Compile Include="Teleport.cs" />
     <Compile Include="Wall.cs" />
     <Compile Include="GameWorld.cs" />

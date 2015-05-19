@@ -48,6 +48,10 @@ namespace GameTask
 					return new Teleport(middle);
 				case 'I':
 					return new IceWall(middle, CellWidth, CellHeight);
+				case '1':
+					return new PlayerBrother(middle, 1);
+				case '2':
+					return new PlayerBrother(middle, 2);
 			}
 			return null;
 		}

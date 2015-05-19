@@ -11,6 +11,8 @@ namespace GameTask
 		Running, 
 		GameOver,
 		NextLevel,
-		ShowLevelText
+		ShowLevelText,
+		GameEnd,
+		ShowEndText
 	}
 }

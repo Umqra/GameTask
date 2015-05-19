@@ -33,14 +33,18 @@ namespace GameTask
 		public Font font;
 		public Brush brush = new SolidBrush(Color.Black);
 		public StringFormat format = StringFormat.GenericTypographic;
-		private List<Text> showingText; 
+		private List<Text> showingText;
 
-		public TextModule(int level, string[] lines)
+		public TextModule()
 		{
 			showingText = new List<Text>();
-			levelNumber = level;
 			fontCollection.AddFontFile("../../../font.ttf");
 			font = new Font(fontCollection.Families[0], 30, FontStyle.Regular);
+		}
+
+		public TextModule(int level, string[] lines) : this()
+		{
+			levelNumber = level;
 			levelName = "Неизвестный уровень";
 			for (int i = 0; i < lines.Length; i++)
 			{
@@ -51,7 +55,12 @@ namespace GameTask
 			ShowText(levelName, 150);
 			foreach (var text in lines.SkipWhile(line => line != "levelText").Skip(1))
 				ShowText(text, 100);
+		}
 
+		public TextModule(string[] lines) : this()
+		{
+			foreach (var text in lines)
+				ShowText(text, 150);
 		}
 
 		public bool Empty()

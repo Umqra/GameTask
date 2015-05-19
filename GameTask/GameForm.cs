@@ -14,10 +14,10 @@ namespace GameTask
 		public GameForm()
 		{
 			levelNumber = 1;
-			BackColor = System.Drawing.Color.DimGray;
+			BackColor = Color.DimGray;
 			pressedKeys = new List<Keys>();
 
-			game = LevelLoader.LoadLevel(levelNumber, "../../../level5.txt");
+			game = LevelLoader.LoadLevel(levelNumber, "../../../level8.txt");
 	
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
