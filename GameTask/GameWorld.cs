@@ -12,9 +12,10 @@ namespace GameTask
 	class GameWorld
 	{
 		public Game game;
-		private PhysicalWorld world;
+		public GameWorld anotherWorld;
+		private readonly PhysicalWorld world;
 		public List<GameObject> Shapes { get; private set; }
-		public GamePlayer player;
+		public Player player;
 		public WorldType Type { get; set; }
 		private Bitmap StaticImage;
 
@@ -50,7 +51,7 @@ namespace GameTask
 
 		public GameWorld(Point playerPosition, WorldType type) : this(type)
 		{
-			player = new GamePlayer(playerPosition);
+			player = new Player(playerPosition);
 			AddGameObject(player);
 		}
 
@@ -78,13 +79,13 @@ namespace GameTask
 			}
 		}
 
-		public void AddGamePlayer(GamePlayer player)
+		public void AddGamePlayer(Player player)
 		{
 			this.player = player;
 			AddGameObject(player);
 		}
 
-		public void RemoveGamePlayer(GamePlayer player)
+		public void RemoveGamePlayer(Player player)
 		{
 			if (this.player == player)
 			{
@@ -135,17 +136,66 @@ namespace GameTask
 			}
 		}
 
-		public void DeleteOutsideObjects()
+		public void DeleteObjects()
 		{
 			foreach (var obj in Shapes)
 			{
-				if (obj.Shape.GetBoundingBox()[0].y > 1400)
+				if (obj.Shape.GetBoundingBox()[0].y > 1400 || !obj.Alive)
 				{
-					obj.OnDelete();
 					world.RemoveBody(obj);
 				}
 			}
 			Shapes = Shapes.Where(obj => obj.Shape.GetBoundingBox()[0].y <= 1400).ToList();
+		}
+
+		public void HandleButtons()
+		{
+			bool switched = false;
+			foreach (var obj in Shapes)
+			{
+				if (obj is Button)
+				{
+					var button = obj as Button;
+					if (button.Activated)
+					{
+						switched = true;
+						button.Disable();
+					}
+				}
+			}
+			if (switched)
+				game.SwitchWorlds();
+		}
+
+		public void HandleTeleports()
+		{
+			var teleportedObj = new List<GameObject>();
+			foreach (var obj in Shapes)
+			{
+				if (obj is Teleport)
+				{
+					var teleport = obj as Teleport;
+					if (teleport.Activated)
+					{
+						var teleported = teleport.teleported;
+						teleportedObj.Add(teleported);
+						teleport.Disable();
+					}
+				}
+			}
+			bool teleportPlayer = false;
+			foreach (var teleported in teleportedObj)
+			{
+				if (teleported is Player)
+				{
+					teleportPlayer = true;
+					break;
+				}
+				RemoveGameObject(teleported);
+				anotherWorld.AddGameObject(teleported);
+			}
+			if (teleportPlayer)
+				game.SwitchWorlds();
 		}
 
 		public void OnTick(double dt)
@@ -153,7 +203,9 @@ namespace GameTask
 			world.OnTick(dt);
 			ChangeShift();
 			HandleCollisions();
-			DeleteOutsideObjects();
+			DeleteObjects();
+			HandleButtons();
+			HandleTeleports();
 		}
 
 		public void OnPaint(PaintEventArgs e)

@@ -11,7 +11,7 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GameGround : GameObject
+	class Ground : GameObject
 	{
 		private static readonly Image[] GroundImagesMain =
 		{
@@ -30,7 +30,7 @@ namespace GameTask
 		private static Random random = new Random(1);
 		private double width, height;
 		private int type;
-		public GameGround(Point center, double width, double height)
+		public Ground(Point center, double width, double height)
 			: base(Physics.Material.Grass, new Point(0, 0), true, null)
 		{
 			type = random.Next(3);

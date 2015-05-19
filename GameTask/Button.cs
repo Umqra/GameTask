@@ -11,7 +11,7 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GameButton : GameObject
+	class Button : GameObject
 	{
 		private static readonly Image ButtonImageMainOn = Image.FromFile("../../../pictures/buttonOn.png");
 		private static readonly Image ButtonImageShadowOn = ButtonImageMainOn.ChangeOpacity(0.2f);
@@ -23,7 +23,7 @@ namespace GameTask
 		public const double Height = 15;
 		public bool Activated { get; set; }
 		public bool Enabled { get; set; }
-		public GameButton(Point center) : base(Physics.Material.Adamantium, new Point(0, 0), false, null)
+		public Button(Point center) : base(Physics.Material.Adamantium, new Point(0, 0), false, null)
 		{
 			Activated = false;
 			Enabled = true;
@@ -37,6 +37,11 @@ namespace GameTask
 			var delta = PhysicalWorld.GetVectorForResolveCollision(target, this);
 			if (delta.DotProductWith(PhysicalWorld.acceleration).IsLess(0))
 				Activated = true;
+		}
+
+		public void Disable()
+		{
+			Enabled = Activated = false;
 		}
 
 		public Image Representation(GameWorld gameWorld)

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using DrawingExtensions;
 using Geometry;
 using NUnit.Framework;
@@ -12,10 +13,13 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GameTeleport : GameObject
+	class Teleport : GameObject
 	{
 		private static readonly Image TeleportImageMainOn = Image.FromFile("../../../pictures/teleportOn.png");
 		private static readonly Image TeleportImageShadowOn = TeleportImageMainOn.ChangeOpacity(0.2f);
+
+		private static readonly Image TeleportImageMainOff = Image.FromFile("../../../pictures/teleportOff.png");
+		private static readonly Image TeleportImageShadowOff = TeleportImageMainOff.ChangeOpacity(0.2f);
 
 		public const double Width = 60;
 		public const double Height = 10;
@@ -23,7 +27,7 @@ namespace GameTask
 		public GameObject teleported;
 		public bool Activated { get; set; }
 		public bool Enabled { get; set; }
-		public GameTeleport(Point center)
+		public Teleport(Point center)
 			: base(Physics.Material.Adamantium, new Point(0, 0), false, null)
 		{
 			teleported = null;
@@ -34,15 +38,28 @@ namespace GameTask
 
 		public override void HandleCollision(Collision collision)
 		{
+			if (!Enabled) return;
 			var target = collision.a == this ? collision.b : collision.a;
 			if (target.IsStatic) return;
-			teleported = (GameObject)target;
-			Activated = true;
+			var delta = PhysicalWorld.GetVectorForResolveCollision(target, this);
+			if (delta.DotProductWith(PhysicalWorld.acceleration).IsLess(0))
+			{
+				teleported = (GameObject) target;
+				Activated = true;
+			}
+		}
+
+		public void Disable()
+		{
+			Activated = Enabled = false;
+			teleported = null;
 		}
 
 		public Image Representation(GameWorld gameWorld)
 		{
-			return gameWorld.Type == WorldType.MainWorld ? TeleportImageMainOn : TeleportImageShadowOn;
+			if (Enabled)
+				return gameWorld.Type == WorldType.MainWorld ? TeleportImageMainOn : TeleportImageShadowOn;
+			return gameWorld.Type == WorldType.MainWorld ? TeleportImageMainOff : TeleportImageShadowOff;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)

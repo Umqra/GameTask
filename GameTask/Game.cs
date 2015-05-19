@@ -24,9 +24,11 @@ namespace GameTask
 			mainWorld = main;
 			shadowWorld = shadow;
 			mainWorld.game = shadowWorld.game = this;
+			mainWorld.anotherWorld = shadowWorld;
+			shadowWorld.anotherWorld = mainWorld;
 		}
 
-		private void SwitchWorlds()
+		public void SwitchWorlds()
 		{
 			shadowWorld.SwitchWorldType();
 			mainWorld.SwitchWorldType();
@@ -50,13 +52,13 @@ namespace GameTask
 			bool switched = false;
 			foreach (var obj in mainWorld.Shapes)
 			{
-				if (obj is GameButton)
+				if (obj is Button)
 				{
-					var button = obj as GameButton;
+					var button = obj as Button;
 					if (button.Activated)
 					{
 						switched = true;
-						button.Activated = button.Enabled = false;
+						button.Disable();
 					}
 				}
 			}
@@ -68,12 +70,12 @@ namespace GameTask
 		{
 			foreach (var obj in mainWorld.Shapes)
 			{
-				if (obj is GameTeleport)
+				if (obj is Teleport)
 				{
-					var telepor = obj as GameTeleport;
+					var telepor = obj as Teleport;
 					if (telepor.Activated)
 					{
-						
+												
 					}
 				}
 			}

@@ -54,18 +54,18 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Game.cs" />
-    <Compile Include="GameBox.cs" />
-    <Compile Include="GameButton.cs" />
-    <Compile Include="GameExit.cs" />
+    <Compile Include="Box.cs" />
+    <Compile Include="Button.cs" />
+    <Compile Include="Exit.cs" />
     <Compile Include="GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GameGround.cs" />
+    <Compile Include="Ground.cs" />
     <Compile Include="GameObject.cs" />
-    <Compile Include="GamePlayer.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="GameStatus.cs" />
-    <Compile Include="GameTeleport.cs" />
-    <Compile Include="GameWall.cs" />
+    <Compile Include="Teleport.cs" />
+    <Compile Include="Wall.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="LevelLoader.cs" />
     <Compile Include="Program.cs" />

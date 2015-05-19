@@ -13,13 +13,13 @@ using Point = Geometry.Point;
 	
 namespace GameTask
 {
-	class GameWall : GameObject
+	class Wall : GameObject
 	{
 		private static readonly Image WallImageMain = Image.FromFile("../../../pictures/wall1.png");
 		private static readonly Image WallImageShadow = WallImageMain.ChangeOpacity(0.2f);
 		private double width, height;
 
-		public GameWall(Point center, double width, double height)
+		public Wall(Point center, double width, double height)
 			: base(Physics.Material.Rock, new Point(0, 0), true, null)
 		{
 			this.width = width;

@@ -12,18 +12,16 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GamePlayer : GameObject
+	class Player : GameObject
 	{
 		private static readonly Image PlayerImageMain = Image.FromFile("../../../pictures/player.png");
 		private static readonly Image PlayerImageShadow = PlayerImageMain.ChangeOpacity(0.2f);
 		
 		public bool Exit { get; set; }
-		public bool Alive { get; set; }
 		private const double Width = 50;
 		private const double Height = 50;
-		public GamePlayer(Point center) : base(Physics.Material.Wood, new Point(0, 0), false, null)
+		public Player(Point center) : base(Material.Wood, new Point(0, 0), false, null)
 		{
-			Alive = true;
 			Exit = false;
 			Shape = ConvexPolygon.Rectangle(center, Width, Height);
 		}
@@ -31,20 +29,13 @@ namespace GameTask
 		public override void HandleCollision(Collision collision)
 		{
 			var target = collision.a == this ? collision.b : collision.a;
-			if (target is GameExit)
+			if (target is Exit)
 				Exit = true;
-			if (collision.penetration.IsGreaterOrEqual(10))
-				Alive = false;
 		}
 
 		public Image Representation(GameWorld gameWorld)
 		{
 			return gameWorld.Type == WorldType.MainWorld ? PlayerImageMain : PlayerImageShadow;
-		}
-
-		public override void OnDelete()
-		{
-			Alive = false;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Geometry;
 
 namespace GameTask
@@ -32,19 +30,19 @@ namespace GameTask
 			switch (type)
 			{
 				case 'P':
-					return new GamePlayer(middle);
+					return new Player(middle);
 				case '#':
-					return new GameWall(middle, CellWidth, CellHeight);
+					return new Wall(middle, CellWidth, CellHeight);
 				case 'B':
-					return new GameBox(middle);
+					return new Box(middle);
 				case 'G':
-					return new GameGround(middle, CellWidth, CellHeight);
+					return new Ground(middle, CellWidth, CellHeight);
 				case 'K':
-					return new GameButton(middle);
+					return new Button(middle);
 				case 'E':
-					return new GameExit(middle);
+					return new Exit(middle);
 				case 'T':
-					return new GameTeleport(middle);
+					return new Teleport(middle);
 			}
 			return null;
 		}
@@ -60,9 +58,9 @@ namespace GameTask
 					var newObject = GetGameObject(s, i, c);
 					if (newObject == null)
 						continue;
-					if (newObject is GamePlayer)
-						world.AddGamePlayer(newObject as GamePlayer);
-					else if (newObject.IsStatic || newObject is GameTeleport)
+					if (newObject is Player)
+						world.AddGamePlayer(newObject as Player);
+					else if (newObject.IsStatic || newObject is Teleport)
 						world.AddGameObject(newObject, 1);
 					else
 						world.AddGameObject(newObject);

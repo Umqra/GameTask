@@ -12,7 +12,7 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GameBox : GameObject
+	class Box : GameObject
 	{
 		private static Random random = new Random();
 		private static readonly Image[] BoxImagesMain =
@@ -31,7 +31,7 @@ namespace GameTask
 
 		const double Size = 50;
 		private int type;
-		public GameBox(Point center)
+		public Box(Point center)
 			: base(Physics.Material.Wood, new Point(0, 0), false, null)
 		{
 			type = random.Next(0, 3);

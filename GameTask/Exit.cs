@@ -10,7 +10,7 @@ using Point = Geometry.Point;
 
 namespace GameTask
 {
-	class GameExit : GameObject
+	class Exit : GameObject
 	{
 		private static readonly Image ExitImageMain = Image.FromFile("../../../pictures/exit.png");
 		private static readonly Image ExitImageShadow = ExitImageMain.ChangeOpacity(0.2f);
@@ -18,7 +18,7 @@ namespace GameTask
 		public const double Width = 40;
 		public const double Height = 50;
 		private Point corner;
-		public GameExit(Point center) : base(Physics.Material.Adamantium, new Point(0, 0), true, 
+		public Exit(Point center) : base(Physics.Material.Adamantium, new Point(0, 0), true, 
 			ConvexPolygon.Rectangle(center + new Point(0, Height / 2 + 1), Width, 2))
 		{
 			corner = center - new Point(Width / 2, Height / 2);
