@@ -13,18 +13,26 @@ namespace GameTask
 {
 	class GameButton : GameObject
 	{
-		private static readonly Image ButtonImageMain = Image.FromFile("../../../pictures/button.png");
-		private static readonly Image ButtonImageShadow = ButtonImageMain.ChangeOpacity(0.2f);
+		private static readonly Image ButtonImageMainOn = Image.FromFile("../../../pictures/buttonOn.png");
+		private static readonly Image ButtonImageShadowOn = ButtonImageMainOn.ChangeOpacity(0.2f);
+
+		private static readonly Image ButtonImageMainOff = Image.FromFile("../../../pictures/buttonOff.png");
+		private static readonly Image ButtonImageShadowOff = ButtonImageMainOff.ChangeOpacity(0.2f);
+
 		public const double Width = 40;
 		public const double Height = 15;
 		public bool Activated { get; set; }
+		public bool Enabled { get; set; }
 		public GameButton(Point center) : base(Physics.Material.Adamantium, new Point(0, 0), false, null)
 		{
+			Activated = false;
+			Enabled = true;
 			Shape = ConvexPolygon.Rectangle(center, Width, Height);
 		}
 
 		public override void HandleCollision(Collision collision)
 		{
+			if (!Enabled) return;
 			var target = collision.a == this ? collision.b : collision.a;
 			var delta = PhysicalWorld.GetVectorForResolveCollision(target, this);
 			if (delta.DotProductWith(PhysicalWorld.acceleration).IsLess(0))
@@ -33,7 +41,9 @@ namespace GameTask
 
 		public Image Representation(GameWorld gameWorld)
 		{
-			return gameWorld.Type == WorldType.MainWorld ? ButtonImageMain : ButtonImageShadow;
+			if (Enabled)
+				return gameWorld.Type == WorldType.MainWorld ? ButtonImageMainOn : ButtonImageShadowOn;
+			return gameWorld.Type == WorldType.MainWorld ? ButtonImageMainOff : ButtonImageShadowOff;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)

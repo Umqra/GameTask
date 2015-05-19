@@ -28,20 +28,23 @@ namespace GameTask
 			var B = new Point((x + 1) * CellHeight, y * CellWidth);
 			var C = new Point((x + 1) * CellHeight, (y + 1) * CellWidth);
 			var D = new Point(x * CellHeight, (y + 1) * CellWidth);
+			Point middle = (A + C) / 2;
 			switch (type)
 			{
 				case 'P':
-					return new GamePlayer((A + B) / 2);
+					return new GamePlayer(middle);
 				case '#':
-					return new GameWall((A + C) / 2, CellWidth, CellHeight);
+					return new GameWall(middle, CellWidth, CellHeight);
 				case 'B':
-					return new GameBox((A + C) / 2);
+					return new GameBox(middle);
 				case 'G':
-					return new GameGround((A + C) / 2, CellWidth, CellHeight);
+					return new GameGround(middle, CellWidth, CellHeight);
 				case 'K':
-					return new GameButton((A + C) / 2);
+					return new GameButton(middle);
 				case 'E':
-					return new GameExit((A + C) / 2);
+					return new GameExit(middle);
+				case 'T':
+					return new GameTeleport(middle);
 			}
 			return null;
 		}
@@ -59,7 +62,7 @@ namespace GameTask
 						continue;
 					if (newObject is GamePlayer)
 						world.AddGamePlayer(newObject as GamePlayer);
-					else if (newObject.IsStatic)
+					else if (newObject.IsStatic || newObject is GameTeleport)
 						world.AddGameObject(newObject, 1);
 					else
 						world.AddGameObject(newObject);

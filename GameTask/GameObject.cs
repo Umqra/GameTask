@@ -23,11 +23,11 @@ namespace GameTask
 			Layer = 0;
 		}
 
-		public abstract void OnPaint(GameWorld sender, Graphics graphics);
+		public abstract void OnPaint(GameWorld gameWorld, Graphics graphics);
 
-		public virtual void OnPaint(GameWorld sender, PaintEventArgs e)
+		public virtual void OnPaint(GameWorld gameWorld, PaintEventArgs e)
 		{
-			OnPaint(sender, e.Graphics);
+			OnPaint(gameWorld, e.Graphics);
 		}
 
 		public virtual void OnDelete()

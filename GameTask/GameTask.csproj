@@ -64,6 +64,7 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="GamePlayer.cs" />
     <Compile Include="GameStatus.cs" />
+    <Compile Include="GameTeleport.cs" />
     <Compile Include="GameWall.cs" />
     <Compile Include="GameWorld.cs" />
     <Compile Include="LevelLoader.cs" />

@@ -56,12 +56,27 @@ namespace GameTask
 					if (button.Activated)
 					{
 						switched = true;
-						button.Activated = false;
+						button.Activated = button.Enabled = false;
 					}
 				}
 			}
 			if (switched)
 				SwitchWorlds();
+		}
+
+		public void HandleTeleports()
+		{
+			foreach (var obj in mainWorld.Shapes)
+			{
+				if (obj is GameTeleport)
+				{
+					var telepor = obj as GameTeleport;
+					if (telepor.Activated)
+					{
+						
+					}
+				}
+			}
 		}
 
 		public void CheckPlayer()
@@ -90,6 +105,7 @@ namespace GameTask
 			shadowWorld.OnTick(dt);
 			mainWorld.OnTick(dt);
 			HandleButtons();
+			HandleTeleports();
 			CenterThePlayer();
 			CheckPlayer();
 		}
