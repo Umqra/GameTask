@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="Ground.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="IceWall.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="GameStatus.cs" />
     <Compile Include="Teleport.cs" />

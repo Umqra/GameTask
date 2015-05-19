@@ -17,7 +17,7 @@ namespace GameTask
 			BackColor = System.Drawing.Color.DimGray;
 			pressedKeys = new List<Keys>();
 
-			game = LevelLoader.LoadLevel(levelNumber, "../../../level1.txt");
+			game = LevelLoader.LoadLevel(levelNumber, "../../../level5.txt");
 	
 			ClientSize = new Size(800, 800);
 			DoubleBuffered = true;
@@ -49,6 +49,7 @@ namespace GameTask
 				game = LevelLoader.LoadLevel(levelNumber, String.Format("../../../level{0}.txt", levelNumber));
 				game.Width = Width;
 				game.Height = Height;
+				game.status = GameStatus.Running;
 			}
 		}
 
@@ -75,6 +76,10 @@ namespace GameTask
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
+			if (e.KeyCode == Keys.R)
+				game.status = GameStatus.GameOver;
+			else if (e.KeyCode == Keys.N)
+				game.status = GameStatus.NextLevel;
 			game.KeyDown(e.KeyCode);
 			if (pressedKeys.Contains(e.KeyCode))
 				return;

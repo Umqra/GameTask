@@ -158,6 +158,7 @@ namespace GameTask
 			{
 				if (obj.Shape.GetBoundingBox()[0].y > 1400 || !obj.Alive)
 				{
+					obj.Alive = false;
 					world.RemoveBody(obj);
 				}
 			}
@@ -230,8 +231,8 @@ namespace GameTask
 			foreach (var obj in Shapes)
 			{
 				if (obj.Shape.Any(p => GeometryOperations.IsPointInRectangle(p, 
-					-currentShiftX, -currentShiftY, 
-					-currentShiftX + game.Width, -currentShiftY + game.Height)))
+					-currentShiftX - 50, -currentShiftY - 50, 
+					-currentShiftX + game.Width + 50, -currentShiftY + game.Height + 50)))
 					obj.OnPaint(this, e);
 			}
 			e.Graphics.TranslateTransform(-(float) currentShiftX, -(float)currentShiftY);

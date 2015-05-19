@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using DrawingExtensions;
 using Geometry;
-using Physics;
 using Point = Geometry.Point;
-	
+
 namespace GameTask
 {
-	class Wall : GameObject
+	class IceWall : GameObject
 	{
-		private static readonly Image WallImageMain = Image.FromFile("../../../pictures/wall1.png");
-		private static readonly Image WallImageShadow = WallImageMain.ChangeOpacity(0.2f);
+		private static readonly Image IceImageMain = Image.FromFile("../../../pictures/ice.png");
+		private static readonly Image IceImageShadow = IceImageMain.ChangeOpacity(0.2f);
+		
 		protected double width, height;
 
-		public Wall(Point center, double width, double height)
-			: base(Physics.Material.Rock, new Point(0, 0), true, null)
+		public IceWall(Point center, double width, double height)
+			: base(Physics.Material.Ice, new Point(0, 0), true, null)
 		{
 			this.width = width;
 			this.height = height;
@@ -35,7 +33,7 @@ namespace GameTask
 
 		public Image Representation(GameWorld gameWorld)
 		{
-			return gameWorld.Type == WorldType.MainWorld ? WallImageMain : WallImageShadow;
+			return gameWorld.Type == WorldType.MainWorld ? IceImageMain : IceImageShadow;
 		}
 
 		public override void OnPaint(GameWorld gameWorld, Graphics graphics)

@@ -46,6 +46,8 @@ namespace GameTask
 					return new Exit(middle);
 				case 'T':
 					return new Teleport(middle);
+				case 'I':
+					return new IceWall(middle, CellWidth, CellHeight);
 			}
 			return null;
 		}

@@ -10,6 +10,7 @@ namespace GameTask
 	{
 		Running, 
 		GameOver,
-		NextLevel
+		NextLevel,
+		ShowLevelText
 	}
 }

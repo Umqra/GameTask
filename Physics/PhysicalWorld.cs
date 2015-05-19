@@ -108,7 +108,7 @@ namespace Physics
 				return;
 			tanget = tanget.SetLength(1);
 			double impulse = -relativeVelocity.DotProductWith(tanget) / (1 / a.Mass + 1 / b.Mass);
-			double mu = Math.Sqrt(a.Material.frictionCoefficient.Sqr() + b.Material.frictionCoefficient.Sqr());
+			double mu = Math.Min(a.Material.frictionCoefficient, b.Material.frictionCoefficient);
 			Point frictionImpulse;
 			if (Math.Abs(impulse).IsLessOrEqual(normalImpulse.Length * mu))
 				frictionImpulse = impulse * tanget;

@@ -25,7 +25,8 @@ namespace GameTask
 			WorldHeight = worldHeight;
 			WorldWidth = worldWidth;
 			
-			status = GameStatus.Running;
+			status = GameStatus.ShowLevelText;
+
 			mainWorld = main;
 			shadowWorld = shadow;
 			mainWorld.game = shadowWorld.game = this;
@@ -47,9 +48,13 @@ namespace GameTask
 
 		public void OnPaint(PaintEventArgs e)
 		{
-			textModule.OnPaint(e);
-			shadowWorld.OnPaint(e);
-			mainWorld.OnPaint(e);
+			if (status == GameStatus.ShowLevelText)
+				textModule.OnPaint(e);
+			else
+			{
+				shadowWorld.OnPaint(e);
+				mainWorld.OnPaint(e);
+			}
 		}
 
 		public void CheckPlayer()
@@ -63,15 +68,17 @@ namespace GameTask
 		private void CenterThePlayer()
 		{
 			double shiftX = 0, shiftY = 0;
-			if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX < 100)
-				shiftX = Math.Min(300, -mainWorld.currentShiftX);
-			else if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX > Width - 200)
-				shiftX = Math.Max((-mainWorld.currentShiftX + Width) - WorldWidth, -300);
+			double maxX = Math.Min(300, Width / 2.0f);
+			double maxY = Math.Min(300, Height / 2.0f);
+			if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX < maxX / 2)
+				shiftX = Math.Min(maxX, -mainWorld.currentShiftX);
+			else if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX > Width - maxX / 2)
+				shiftX = Math.Min(0, Math.Max((-mainWorld.currentShiftX + Width) - WorldWidth, -maxX));
 
-			if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY < 100)
-				shiftY = Math.Min(300, -mainWorld.currentShiftY);
-			else if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY > Height - 200)
-				shiftY = Math.Max((-mainWorld.currentShiftY + Height) - WorldHeight, -300);
+			if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY < maxY / 2)
+				shiftY = Math.Min(maxY, -mainWorld.currentShiftY);
+			else if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY > Height - maxY / 2)
+				shiftY = Math.Min(0, Math.Max((-mainWorld.currentShiftY + Height) - WorldHeight, -maxY));
 
 			mainWorld.ShiftWorld(shiftX, shiftY);
 			shadowWorld.ShiftWorld(shiftX, shiftY);
@@ -79,7 +86,9 @@ namespace GameTask
 
 		public void OnTick(double dt)
 		{
-			if (status == GameStatus.GameOver)
+			if (textModule.Empty() && status == GameStatus.ShowLevelText)
+				status = GameStatus.Running;
+			if (status == GameStatus.GameOver || status == GameStatus.ShowLevelText)
 				return;
 			shadowWorld.OnTick(dt);
 			mainWorld.OnTick(dt);
@@ -91,6 +100,12 @@ namespace GameTask
 		{
 			if (status == GameStatus.GameOver)
 				return;
+			if (status == GameStatus.ShowLevelText)
+			{
+				if (key == Keys.Space)
+					status = GameStatus.Running;
+				return;
+			}
 			if (key == Keys.Left)
 				mainWorld.SetVelocityToPlayer(new Geometry.Point(-20, 0));
 			if (key == Keys.Right)
@@ -101,10 +116,6 @@ namespace GameTask
 
 		public void KeyDown(Keys key)
 		{
-			if (status == GameStatus.GameOver)
-				return;
-			if (key == Keys.Space)
-				SwitchWorlds();
 		}
 	}
 }
