@@ -10,16 +10,21 @@ namespace GameTask
 {
 	class Game
 	{
+		public double WorldWidth, WorldHeight;
 		public double Width, Height;
 		public GameStatus status;
 		public TextModule textModule;
 		public GameWorld mainWorld;
 		public GameWorld shadowWorld;
 
-		public Game(GameWorld main, GameWorld shadow, TextModule textModule)
+		public Game(GameWorld main, GameWorld shadow, TextModule textModule, double worldWidth, double worldHeight)
 		{
 			this.textModule = textModule;
 			Width = Height = 800;
+
+			WorldHeight = worldHeight;
+			WorldWidth = worldWidth;
+			
 			status = GameStatus.Running;
 			mainWorld = main;
 			shadowWorld = shadow;
@@ -47,40 +52,6 @@ namespace GameTask
 			mainWorld.OnPaint(e);
 		}
 
-		public void HandleButtons()
-		{
-			bool switched = false;
-			foreach (var obj in mainWorld.Shapes)
-			{
-				if (obj is Button)
-				{
-					var button = obj as Button;
-					if (button.Activated)
-					{
-						switched = true;
-						button.Disable();
-					}
-				}
-			}
-			if (switched)
-				SwitchWorlds();
-		}
-
-		public void HandleTeleports()
-		{
-			foreach (var obj in mainWorld.Shapes)
-			{
-				if (obj is Teleport)
-				{
-					var telepor = obj as Teleport;
-					if (telepor.Activated)
-					{
-												
-					}
-				}
-			}
-		}
-
 		public void CheckPlayer()
 		{
 			if (!mainWorld.player.Alive)
@@ -91,13 +62,19 @@ namespace GameTask
 
 		private void CenterThePlayer()
 		{
-			double shift = 0;
-			if (mainWorld.player.Shape[0].x + mainWorld.currentShift < 100)
-				shift = 300;
-			else if (mainWorld.player.Shape[0].x + mainWorld.currentShift > Width - 200)
-				shift = -300;
-			mainWorld.ShiftWorld(shift);
-			shadowWorld.ShiftWorld(shift);
+			double shiftX = 0, shiftY = 0;
+			if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX < 100)
+				shiftX = Math.Min(300, -mainWorld.currentShiftX);
+			else if (mainWorld.player.Shape[0].x + mainWorld.currentShiftX > Width - 200)
+				shiftX = Math.Max((-mainWorld.currentShiftX + Width) - WorldWidth, -300);
+
+			if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY < 100)
+				shiftY = Math.Min(300, -mainWorld.currentShiftY);
+			else if (mainWorld.player.Shape[0].y + mainWorld.currentShiftY > Height - 200)
+				shiftY = Math.Max((-mainWorld.currentShiftY + Height) - WorldHeight, -300);
+
+			mainWorld.ShiftWorld(shiftX, shiftY);
+			shadowWorld.ShiftWorld(shiftX, shiftY);
 		}
 
 		public void OnTick(double dt)
@@ -106,8 +83,6 @@ namespace GameTask
 				return;
 			shadowWorld.OnTick(dt);
 			mainWorld.OnTick(dt);
-			HandleButtons();
-			HandleTeleports();
 			CenterThePlayer();
 			CheckPlayer();
 		}

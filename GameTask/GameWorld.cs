@@ -19,25 +19,39 @@ namespace GameTask
 		public WorldType Type { get; set; }
 		private Bitmap StaticImage;
 
-		public double currentShift, neededShift;
+		public double currentShiftX, neededShiftX;
+		public double currentShiftY, neededShiftY;
 
 		private void ChangeShift()
 		{
-			double delta = neededShift - currentShift;
-			if (delta.IsNotEqual(0))
+			double deltaX = neededShiftX - currentShiftX;
+			double deltaY = neededShiftY - currentShiftY;
+			bool changed = false;
+			if (deltaX.IsNotEqual(0))
 			{
-				if (Math.Abs(delta) < 1)
-					currentShift += delta;
+				if (Math.Abs(deltaX) < 1)
+					currentShiftX += deltaX;
 				else
-				currentShift += delta / Math.Abs(delta) * 2;
-				InitializeStaticImage();
+					currentShiftX += deltaX / Math.Abs(deltaX) * 2;
+				changed = true;
 			}
+			if (deltaY.IsNotEqual(0))
+			{
+				if (Math.Abs(deltaY) < 1)
+					currentShiftY += deltaY;
+				else
+					currentShiftY += deltaY / Math.Abs(deltaY) * 2;
+				changed = true;
+			}
+			if (changed)
+				InitializeStaticImage();
 		}
 
 		public GameWorld()
 		{
 			game = null;
-			currentShift = neededShift = 0;
+			currentShiftX = neededShiftX = 0;
+			currentShiftY = neededShiftY = 0;
 			StaticImage = new Bitmap(2000, 800);
 			world = new PhysicalWorld();
 			Shapes = new List<GameObject>();
@@ -55,10 +69,12 @@ namespace GameTask
 			AddGameObject(player);
 		}
 
-		public void ShiftWorld(double shift)
+		public void ShiftWorld(double shiftX, double shiftY)
 		{
-			if (neededShift.IsEqual(currentShift) && neededShift + shift <= 0)
-				neededShift += shift;
+			if (neededShiftX.IsEqual(currentShiftX))
+				neededShiftX += shiftX;
+			if (neededShiftY.IsEqual(currentShiftY))
+				neededShiftY += shiftY;
 		}
 
 		public void SwitchWorldType()
@@ -71,7 +87,7 @@ namespace GameTask
 		{
 			StaticImage = new Bitmap(800, 800);
 			var graphics = Graphics.FromImage(StaticImage);
-			graphics.TranslateTransform((float)currentShift, 0);
+			graphics.TranslateTransform((float)currentShiftX, (float)currentShiftY);
 			foreach (var shape in Shapes)
 			{
 				if (shape.IsStatic)
@@ -210,14 +226,15 @@ namespace GameTask
 
 		public void OnPaint(PaintEventArgs e)
 		{
-			e.Graphics.TranslateTransform((float)currentShift, 0);
+			e.Graphics.TranslateTransform((float)currentShiftX, (float)currentShiftY);
 			foreach (var obj in Shapes)
 			{
 				if (obj.Shape.Any(p => GeometryOperations.IsPointInRectangle(p, 
-					-currentShift, 0, -currentShift + game.Width, game.Height)))
+					-currentShiftX, -currentShiftY, 
+					-currentShiftX + game.Width, -currentShiftY + game.Height)))
 					obj.OnPaint(this, e);
 			}
-			e.Graphics.TranslateTransform(-(float) currentShift, 0);
+			e.Graphics.TranslateTransform(-(float) currentShiftX, -(float)currentShiftY);
 		}
 	}
 }

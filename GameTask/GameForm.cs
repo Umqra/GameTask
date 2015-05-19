@@ -69,8 +69,8 @@ namespace GameTask
 		protected override void OnResize(EventArgs e)
 		{
 			base.OnResize(e);
-			game.Width = Width;
-			game.Height = Height;
+			game.Width = ClientSize.Width;
+			game.Height = ClientSize.Height;
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

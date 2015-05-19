@@ -17,7 +17,10 @@ namespace GameTask
 			int h = int.Parse(sizes[0]), w = int.Parse(sizes[1]);
 			var firstWorld = LoadWorld(lines.Skip(2).Take(h).ToList(), WorldType.MainWorld);
 			var secondWorld = LoadWorld(lines.Skip(3 + h).Take(h).ToList(), WorldType.ShadowWorld);
-			return new Game(firstWorld, secondWorld, new TextModule(level, lines.Skip(3 + 2 * h).ToArray()));
+			double worldWidth = w * CellWidth;
+			double worldHeight = h * CellHeight;
+			return new Game(firstWorld, secondWorld, new TextModule(level, lines.Skip(3 + 2 * h).ToArray()),
+				worldWidth, worldHeight);
 		}
 
 		public static GameObject GetGameObject(int x, int y, char type)
